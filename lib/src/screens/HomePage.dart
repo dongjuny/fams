@@ -45,8 +45,8 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.all(0),
             child: froyoOutlineBtn('Sign Up', (){
 
-              Navigator.pushReplacement(context, newRoute);
-              // Navigator.of(context).pushReplacementNamed('/signup');
+//              Navigator.pushReplacement(context, newRoute);
+               Navigator.of(context).pushReplacementNamed('/signup');
              }),
           ),
           Container(
