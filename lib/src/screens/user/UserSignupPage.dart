@@ -1,4 +1,4 @@
-import 'package:fams/src/screens/user/Dashboard.dart';
+import 'package:fams/src/screens/user/DashboardPage.dart';
 import 'package:flutter/material.dart';
 import '../../shared/styles.dart';
 import '../../shared/colors.dart';

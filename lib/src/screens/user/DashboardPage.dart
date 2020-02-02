@@ -20,10 +20,7 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     final _tabs = [
       AttendanceStatus(),
-      Text('Tab2'),
-      Text('Tab3'),
-      Text('Tab4'),
-      Text('Tab5'),
+      Text('설정'),
     ];
 
     return Scaffold(
@@ -83,4 +80,3 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 }
-

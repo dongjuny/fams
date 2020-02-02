@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fams/src/screens/user/UserSignup.dart';
+import 'package:fams/src/screens/user/UserSignupPage.dart';
 import '../shared/styles.dart';
 import '../shared/colors.dart';
 import '../shared/buttons.dart';
-import 'admin/AdminSignUp.dart';
+import 'admin/AdminSignUpPage.dart';
 import 'package:page_transition/page_transition.dart';
 
 class ChoicePage extends StatefulWidget {

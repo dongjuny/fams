@@ -33,13 +33,55 @@ Widget AttendanceStatus() {
     children: <Widget>[
       sectionHeader('출석 현황', onViewMore: () {}),
       Container(
-        margin: EdgeInsets.all(16.0),
+        margin: EdgeInsets.all(10.0),
+        color: Color(0xFFffffff),
+        child: dropbtn(),
+      ),
+      Container(
+        margin: EdgeInsets.all(10.0),
         color: Color(0xFFffffff),
         child: calendar(),
       ),
     ],
   );
 }
+
+// items 리스트를 변경하면 에러뜸 나중에 해결해봄
+String dropdownValue = 'One';
+
+@override
+Widget dropbtn() {
+  return DropdownButton<String>(
+    value: dropdownValue,
+    icon: Icon(Icons.arrow_downward),
+    iconSize: 24,
+    elevation: 16,
+    style: TextStyle(
+        color: Colors.black
+    ),
+    underline: Container(
+      height: 2,
+      color: Colors.black,
+    ),
+    onChanged: (String newValue) {
+      setState(() {
+        dropdownValue = newValue;
+      });
+    },
+    items: <String>['One', 'Two', 'Free', 'Four']
+        .map<DropdownMenuItem<String>>((String value) {
+      return DropdownMenuItem<String>(
+        value: value,
+        child: Text(value),
+      );
+    })
+        .toList(),
+  );
+}
+void setState(Null Function() param0) {
+  return null;
+}
+
 
 //달력 위젯
 final Map<DateTime, List> _selectedDay = {

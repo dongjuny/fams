@@ -1,8 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../shared/styles.dart';
 import '../shared/colors.dart';
 import '../shared/inputFields.dart';
-import 'user/Dashboard.dart';
+import 'user/DashboardPage.dart';
 import "package:page_transition/page_transition.dart";
 import 'ChoicePage.dart';
 

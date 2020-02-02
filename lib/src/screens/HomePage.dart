@@ -1,3 +1,6 @@
+import 'dart:ffi';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fams/src/screens/ChoicePage.dart';
 import '../shared/styles.dart';
@@ -41,7 +44,8 @@ class _HomePageState extends State<HomePage> {
             width: 200,
             padding: EdgeInsets.all(0),
             child: froyoOutlineBtn('Sign Up', (){
-              Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rotate, duration: Duration(seconds: 1),  child: ChoicePage()));
+
+              Navigator.pushReplacement(context, newRoute);
               // Navigator.of(context).pushReplacementNamed('/signup');
              }),
           ),
@@ -59,4 +63,35 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: bgColor,
     );
   }
+}
+
+
+Future<void> _handleClickMe() async {
+  return showCupertinoModalPopup<void>(
+    builder: (BuildContext context) {
+      return CupertinoActionSheet(
+        title: Text('Favorite Dessert'),
+        message: Text('Please select the best dessert from the options below.'),
+        actions: <Widget>[
+          CupertinoActionSheetAction(
+            child: Text('Profiteroles'),
+            onPressed: () { /** */ },
+          ),
+          CupertinoActionSheetAction(
+            child: Text('Cannolis'),
+            onPressed: () { /** */ },
+          ),
+          CupertinoActionSheetAction(
+            child: Text('Trifie'),
+            onPressed: () { /** */ },
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          isDefaultAction: true,
+          child: Text('Cancel'),
+          onPressed: () { /** */ },
+        ),
+      );
+    },
+  );
 }
