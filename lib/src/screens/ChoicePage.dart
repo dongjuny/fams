@@ -1,10 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fams/src/screens/user/UserSignupPage.dart';
 import '../shared/styles.dart';
 import '../shared/colors.dart';
 import '../shared/buttons.dart';
 import 'admin/AdminSignUpPage.dart';
 import 'package:page_transition/page_transition.dart';
+import './GoogleSignUpPage.dart';
 
 class ChoicePage extends StatefulWidget {
   final String pageTitle;
@@ -45,7 +46,7 @@ class _HomePageState extends State<ChoicePage> {
               Container(
                 margin: EdgeInsets.all(0),
                 child: froyoFlatBtn("유저", (){
-                  Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rotate, duration: Duration(seconds: 1),  child: UserSignup()));
+                  Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rotate, duration: Duration(seconds: 1),  child: HomePage()));
                 })
               )
             ],

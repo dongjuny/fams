@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
             child: froyoOutlineBtn('Sign Up', (){
 
 //              Navigator.pushReplacement(context, newRoute);
-               Navigator.of(context).pushReplacementNamed('/signup');
+              Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rotate, duration: Duration(seconds: 1),  child: ChoicePage()));
              }),
           ),
           Container(
