@@ -30,7 +30,7 @@ class _SignUpPageState extends State<UserSignup> {
             FlatButton(
               onPressed: () {
                 // Navigator.of(context).pushReplacementNamed('/signin');
-                Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: SignInPage()));
+                //Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: SignInPage()));
 
               },
               child: Text('Sign In', style: contrastText),
