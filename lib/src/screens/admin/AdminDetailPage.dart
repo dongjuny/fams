@@ -17,7 +17,6 @@ class User {
 class _AdminDetailState extends State<AdminDetailPage>{
 
   var currentColor = Color.fromRGBO(231, 129, 109, 1.0);
-  var cardIndex = 0;
 
   String start_time = "Not set";
   String end_time = "Not set";
