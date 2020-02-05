@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+import 'AdminDetailPage.dart';
 
-class AdminMain extends StatefulWidget {
+class AdminMainPage extends StatefulWidget {
   @override
   _AdminMainState createState() => new _AdminMainState();
 }
@@ -20,7 +22,7 @@ class Cards {
 
 }
 
-class _AdminMainState extends State<AdminMain> with TickerProviderStateMixin {
+class _AdminMainState extends State<AdminMainPage> with TickerProviderStateMixin {
 
   var appColors = [Color.fromRGBO(231, 129, 109, 1.0),Color.fromRGBO(99, 138, 223, 1.0),Color.fromRGBO(111, 194, 173, 1.0)];
   var currentColor = Color.fromRGBO(231, 129, 109, 1.0);
@@ -96,6 +98,9 @@ class _AdminMainState extends State<AdminMain> with TickerProviderStateMixin {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, position) {
                       return GestureDetector(
+                        onTap: (){
+                          Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft,  child: AdminDetailPage()));
+                        },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Card(
