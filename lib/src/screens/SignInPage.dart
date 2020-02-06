@@ -5,19 +5,18 @@ import '../shared/colors.dart';
 import '../shared/inputFields.dart';
 import 'user/DashboardPage.dart';
 import "package:page_transition/page_transition.dart";
-import 'ChoicePage.dart';
 
 
-class SignInPage extends StatefulWidget {
+class SignInPages extends StatefulWidget {
   final String pageTitle;
 
-  SignInPage({Key key, this.pageTitle}) : super(key: key);
+  SignInPages({Key key, this.pageTitle}) : super(key: key);
 
   @override
   _SignInPageState createState() => _SignInPageState();
 }
 
-class _SignInPageState extends State<SignInPage> {
+class _SignInPageState extends State<SignInPages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,8 +29,7 @@ class _SignInPageState extends State<SignInPage> {
         actions: <Widget>[
           FlatButton(
             onPressed: () {
-              // Navigator.of(context).pushReplacementNamed('/signup');
-              Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft,  child: ChoicePage()));
+              Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft,  child: Dashboard()));
 
             },
             child: Text('Sign Up', style: contrastText),
