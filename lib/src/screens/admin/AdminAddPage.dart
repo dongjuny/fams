@@ -15,7 +15,7 @@ class User {
 
 class _AdminAddState extends State<AdminAddPage>{
 
-  var currentColor = Color.fromRGBO(231, 129, 109, 1.0);
+  var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
 
   String startTime = "Not set";
   String endTime = "Not set";
@@ -36,6 +36,8 @@ class _AdminAddState extends State<AdminAddPage>{
   ScrollController scrollController;
   ColorTween colorTween;
   CurvedAnimation curvedAnimation;
+  final nameController = TextEditingController();
+  final idController = TextEditingController();
 
   @override
   void initState() {
@@ -52,8 +54,6 @@ class _AdminAddState extends State<AdminAddPage>{
         title: new Text("ADMIN", style: TextStyle(fontSize: 16.0),),
         backgroundColor: currentColor,
         centerTitle: true,
-        actions: <Widget>[
-        ],
         elevation: 0.0,
       ),
       body: new Center(
@@ -66,13 +66,18 @@ class _AdminAddState extends State<AdminAddPage>{
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Row(
-                        children: <Widget>[
-                          Text("Add Group Setting", style: TextStyle(fontSize: 15.0, color: Colors.white, fontWeight: FontWeight.w400)),
-                        ]
-                    ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("Add Group Setting", style: TextStyle(fontSize: 15.0, color: Colors.black54),),
+                        ],
+                      ),
+                    ),
+                    Divider(),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
@@ -89,6 +94,7 @@ class _AdminAddState extends State<AdminAddPage>{
                                       left: 14.0, bottom: 8.0, top: 5.0),
                                   labelText: 'Name of the Group',
                                 ),
+                                controller: nameController,
                               ),
                             )
                           ),
@@ -113,6 +119,7 @@ class _AdminAddState extends State<AdminAddPage>{
                                         left: 14.0, bottom: 8.0, top: 5.0),
                                     labelText: 'Jetson Nano Mac Id',
                                   ),
+                                  controller: idController,
                                 ),
                               )
                           ),
@@ -141,14 +148,14 @@ class _AdminAddState extends State<AdminAddPage>{
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
 //                                Icon(Icons.add, color: Colors.transparent,),
-                                Text("Add Users", style: TextStyle(fontSize: 15.0, color: Colors.grey),),
+                                Text("Add Users", style: TextStyle(fontSize: 15.0, color: Colors.black54),),
 //                                Icon(Icons.add, color: Colors.grey,),
                               ],
                             ),
                           ),
                           Divider(),
                           Container(
-                            height: 200.0,
+                            height: 160.0,
                             child: ListView(
 //                              padding: EdgeInsets.symmetric(horizontal: 5.0),
                               children: usersList
@@ -182,7 +189,7 @@ class _AdminAddState extends State<AdminAddPage>{
                 )
             ),
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5.0),
                 child: Column(
                   children: <Widget>[
                     Card(
@@ -195,7 +202,7 @@ class _AdminAddState extends State<AdminAddPage>{
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text("Time Setting", style: TextStyle(fontSize: 15.0, color: Colors.grey),),
+                                Text("Time Setting", style: TextStyle(fontSize: 15.0, color: Colors.black54),),
                               ],
                             ),
                           ),
@@ -344,10 +351,16 @@ class _AdminAddState extends State<AdminAddPage>{
                   ],
                 )
             ),
+            RaisedButton(
+              child: Text('Add'),
+              color: Colors.white,
+              onPressed: () {
+                Navigator.pop(context, nameController.text);
+              },
+            ),
           ],
         ),
       ),
-      drawer: Drawer(),
     );
   }
 }

@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class AdminDetailPage extends StatefulWidget {
+
+  final String groupName;
+
+  AdminDetailPage(this.groupName);
+
   @override
-  _AdminDetailState createState() => new _AdminDetailState();
+  _AdminDetailState createState() => new _AdminDetailState(groupName);
 }
 
 class User {
@@ -16,7 +21,10 @@ class User {
 
 class _AdminDetailState extends State<AdminDetailPage>{
 
-  var currentColor = Color.fromRGBO(231, 129, 109, 1.0);
+  String groupName;
+  _AdminDetailState(this.groupName);
+
+  var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
 
   String start_time = "Not set";
   String end_time = "Not set";
@@ -42,7 +50,6 @@ class _AdminDetailState extends State<AdminDetailPage>{
   void initState() {
     super.initState();
     scrollController = new ScrollController();
-
   }
 
   @override
@@ -53,6 +60,10 @@ class _AdminDetailState extends State<AdminDetailPage>{
         title: new Text("ADMIN", style: TextStyle(fontSize: 16.0),),
         backgroundColor: currentColor,
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
         actions: <Widget>[
         ],
         elevation: 0.0,
@@ -65,7 +76,7 @@ class _AdminDetailState extends State<AdminDetailPage>{
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 0.0),
-                  child: Text("Setting for Group A", style: TextStyle(fontSize: 15.0, color: Colors.white, fontWeight: FontWeight.w400)),
+                  child: Text("Setting for ${groupName}", style: TextStyle(fontSize: 15.0, color: Colors.white, fontWeight: FontWeight.w400)),
                 ),
               ],
             ),
@@ -79,59 +90,41 @@ class _AdminDetailState extends State<AdminDetailPage>{
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(5.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Icon(Icons.add, color: Colors.transparent,),
-                              Text("Users", style: TextStyle(fontSize: 15.0, color: Colors.grey),),
-                              Icon(Icons.add, color: Colors.grey,),
+                              Text("Users", style: TextStyle(fontSize: 15.0, color: Colors.black54),),
+                              Icon(Icons.add, color: Colors.black54,),
                             ],
                           ),
                         ),
                         Divider(),
                         Container(
                           height: 300.0,
-                          child: ListView.builder(
-                            itemBuilder: (context, position) {
-                              User user = usersList[position];
-                              return Column(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Icon(Icons.account_circle, size: 35.0, color: Colors.grey,),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: <Widget>[
-                                                  Text(user.name, style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15.0),),
-                                                ],
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 1.0),
-                                                child: Text(
-                                                  user.isAttend ? 'Attend' : 'Absent',
-                                                  style: TextStyle(color: user.isAttend ? Colors.green : Colors.red, fontSize: 13.0),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                          child: ListView(
+//                              padding: EdgeInsets.symmetric(horizontal: 5.0),
+                            children: usersList
+                                .map((data) => Column(
+                              children: <Widget>[
+                                ListTile(
+                                  leading: Icon(Icons.person),
+                                  trailing: Icon(Icons.arrow_forward_ios,),
+                                  title: Row(
+                                    children: <Widget>[
+                                      Text(data.name),
+//                                          Padding(
+//                                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+//                                            child: Text(data.isAttend ? "Attend" : "Absent", style: TextStyle(fontSize: 12.0, color: Colors.grey),)
+//                                          )
+                                    ],
                                   ),
-                                  Divider(),
-                                ],
-                              );
-                            },
-                            itemCount: usersList.length,
-                          ),
+                                ),
+                                Divider(),
+                              ],
+                            )).toList(),
+                          )
                         ),
                       ],
                     ),
@@ -156,7 +149,7 @@ class _AdminDetailState extends State<AdminDetailPage>{
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text("Time Setting", style: TextStyle(fontSize: 15.0, color: Colors.grey),),
+                                Text("Time Setting", style: TextStyle(fontSize: 15.0, color: Colors.black54),),
                               ],
                             ),
                           ),
@@ -308,7 +301,7 @@ class _AdminDetailState extends State<AdminDetailPage>{
           ],
         ),
       ),
-      drawer: Drawer(),
+//      drawer: Drawer(),
     );
   }
 }
