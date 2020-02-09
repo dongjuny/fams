@@ -4,6 +4,7 @@ import 'AdminDetailPage.dart';
 import 'AdminAddPage.dart';
 
 class AdminMainPage extends StatefulWidget {
+
   @override
   _AdminMainState createState() => new _AdminMainState();
 }
@@ -106,7 +107,7 @@ class _AdminMainState extends State<AdminMainPage> {
                     Row(),
                     Container(
                       height: 400.0,
-                      child: ListModule(cardsList),
+                      child: ListModule(cardsList: cardsList),
 //                      child: ListView.builder(
 //                        physics: NeverScrollableScrollPhysics(),
 //                        itemCount: cardsList.length,
@@ -229,15 +230,21 @@ class _AdminMainState extends State<AdminMainPage> {
 }
 
 class ListModule extends StatefulWidget {
-  _ListModuleState createState() => _ListModuleState(cardsList);
-  List<Cards> cardsList;
 
-  ListModule(this.cardsList);
+  const ListModule({
+    Key key,
+    @required this.cardsList,
+  }) : super(key: key);
+
+  _ListModuleState createState() => _ListModuleState();
+  final List<Cards> cardsList;
+
+//  ListModule(this.cardsList);
 }
 
 class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
 
-  _ListModuleState(this.cardsList);
+//  _ListModuleState(this.cardsList);
 
   List<Cards> cardsList;
 
@@ -254,6 +261,7 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     scrollController = new ScrollController();
+    cardsList = widget.cardsList;
   }
 
   Widget build(BuildContext context){
