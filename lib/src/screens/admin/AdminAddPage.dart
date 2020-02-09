@@ -32,6 +32,8 @@ class _AdminAddState extends State<AdminAddPage>{
     User('user I', true),
   ];
 
+  List<User> selectedUsers = new List();
+
   AnimationController animationController;
   ScrollController scrollController;
   ColorTween colorTween;
@@ -43,7 +45,7 @@ class _AdminAddState extends State<AdminAddPage>{
   void initState() {
     super.initState();
     scrollController = new ScrollController();
-
+//    selectedUsers = new List.filled(usersList.length, false);
   }
 
   @override
@@ -54,7 +56,7 @@ class _AdminAddState extends State<AdminAddPage>{
         title: new Text("ADMIN", style: TextStyle(fontSize: 16.0),),
         backgroundColor: currentColor,
         centerTitle: true,
-        elevation: 0.0,
+        elevation: 10.0,
       ),
       body: new Center(
         child: Column(
@@ -159,24 +161,28 @@ class _AdminAddState extends State<AdminAddPage>{
                             child: ListView(
 //                              padding: EdgeInsets.symmetric(horizontal: 5.0),
                               children: usersList
-                                .map((data) => Column(
-                                  children: <Widget>[
-                                    ListTile(
-                                      leading: Icon(Icons.person),
-                                      trailing: Icon(Icons.check, color: Colors.red,),
-                                      title: Row(
-                                        children: <Widget>[
-                                          Text(data.name),
-//                                          Padding(
-//                                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-//                                            child: Text(data.isAttend ? "Attend" : "Absent", style: TextStyle(fontSize: 12.0, color: Colors.grey),)
-//                                          )
-                                        ],
+                                .map((data) {
+                                  bool saved = selectedUsers.contains(data);
+                                  return Column(
+                                    children: <Widget>[
+                                      ListTile(
+                                        leading: Icon(Icons.person),
+                                        trailing: Icon(Icons.check, color: saved ? Colors.red : Colors.black54,),
+                                        title: Row(
+                                          children: <Widget>[
+                                            Text(data.name),
+                                          ],
+                                        ),
+                                        onTap: () {
+                                          setState(() {
+                                            saved ? selectedUsers.remove(data) : selectedUsers.add(data);
+                                          });
+                                        },
                                       ),
-                                    ),
-                                    Divider(),
-                                  ],
-                                )).toList(),
+                                      Divider(),
+                                    ],
+                                  );
+                                }).toList(),
                             )
                           ),
                         ],

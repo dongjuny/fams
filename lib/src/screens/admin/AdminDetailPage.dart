@@ -16,7 +16,6 @@ class User {
   bool isAttend;
 
   User(this.name, this.isAttend);
-
 }
 
 class _AdminDetailState extends State<AdminDetailPage>{
@@ -26,8 +25,8 @@ class _AdminDetailState extends State<AdminDetailPage>{
 
   var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
 
-  String start_time = "Not set";
-  String end_time = "Not set";
+  String startTime = "Not set";
+  String endTime = "Not set";
 
   List<User> usersList = [
     User('user A', true),
@@ -66,7 +65,7 @@ class _AdminDetailState extends State<AdminDetailPage>{
         ),
         actions: <Widget>[
         ],
-        elevation: 0.0,
+        elevation: 10.0,
       ),
       body: new Center(
         child: Column(
@@ -114,10 +113,10 @@ class _AdminDetailState extends State<AdminDetailPage>{
                                   title: Row(
                                     children: <Widget>[
                                       Text(data.name),
-//                                          Padding(
-//                                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-//                                            child: Text(data.isAttend ? "Attend" : "Absent", style: TextStyle(fontSize: 12.0, color: Colors.grey),)
-//                                          )
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                            child: Text(data.isAttend ? "Attend" : "Absent", style: TextStyle(fontSize: 12.0, color: Colors.grey),)
+                                          )
                                     ],
                                   ),
                                 ),
@@ -176,7 +175,7 @@ class _AdminDetailState extends State<AdminDetailPage>{
                                             ),
                                             showTitleActions: true, onConfirm: (time) {
                                               print('confirm $time');
-                                              start_time = '${time.hour} : ${time.minute} : ${time.second}';
+                                              startTime = '${time.hour} : ${time.minute} : ${time.second}';
                                               setState(() {});
                                             }, currentTime: DateTime.now(), locale: LocaleType.en);
                                         setState(() {});
@@ -198,7 +197,7 @@ class _AdminDetailState extends State<AdminDetailPage>{
                                                         color: Colors.teal,
                                                       ),
                                                       Text(
-                                                        " $start_time",
+                                                        " $startTime",
                                                         style: TextStyle(
                                                             color: Colors.teal,
                                                             fontWeight: FontWeight.bold,
@@ -240,7 +239,7 @@ class _AdminDetailState extends State<AdminDetailPage>{
                                             ),
                                             showTitleActions: true, onConfirm: (time) {
                                               print('confirm $time');
-                                              end_time = '${time.hour} : ${time.minute} : ${time.second}';
+                                              endTime = '${time.hour} : ${time.minute} : ${time.second}';
                                               setState(() {});
                                             }, currentTime: DateTime.now(), locale: LocaleType.en);
                                         setState(() {});
@@ -262,7 +261,7 @@ class _AdminDetailState extends State<AdminDetailPage>{
                                                         color: Colors.teal,
                                                       ),
                                                       Text(
-                                                        " $end_time",
+                                                        " $endTime",
                                                         style: TextStyle(
                                                             color: Colors.teal,
                                                             fontWeight: FontWeight.bold,

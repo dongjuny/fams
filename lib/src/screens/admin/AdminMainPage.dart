@@ -19,7 +19,7 @@ class Cards {
   }
 }
 
-class _AdminMainState extends State<AdminMainPage> with TickerProviderStateMixin {
+class _AdminMainState extends State<AdminMainPage> {
 
   var appColors = [
     Color.fromRGBO(99, 138, 223, 1.0),
@@ -29,9 +29,15 @@ class _AdminMainState extends State<AdminMainPage> with TickerProviderStateMixin
     Color.fromRGBO(231, 129, 109, 1.0),
     Color.fromRGBO(111, 194, 173, 1.0)
   ];
-  var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
+
+//
+//  var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
   var cardIndex = 0;
-  ScrollController scrollController;
+
+//  var itemCount;
+//
+//  ScrollController scrollController;
+
   List<Cards> cardsList = [
     Cards("Group A", 9, 10),
     Cards("Group B", 100, 1),
@@ -41,15 +47,15 @@ class _AdminMainState extends State<AdminMainPage> with TickerProviderStateMixin
     Cards("Group F", 50, 3)
   ];
 
-  AnimationController animationController;
-  ColorTween colorTween;
-  CurvedAnimation curvedAnimation;
+//  AnimationController animationController;
+//  ColorTween colorTween;
+//  CurvedAnimation curvedAnimation;
 
   @override
   void initState() {
     super.initState();
-    scrollController = new ScrollController();
-
+//    scrollController = new ScrollController();
+//    itemCount = cardsList.length;
   }
 
   @override
@@ -60,127 +66,136 @@ class _AdminMainState extends State<AdminMainPage> with TickerProviderStateMixin
         title: new Text("ADMIN", style: TextStyle(fontSize: 16.0),),
         backgroundColor: appColors[cardIndex],
         centerTitle: true,
-        elevation: 0.0,
+        elevation: 10.0,
       ),
       body: new Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-//          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Row(),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 0.0),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 40.0, vertical: 0.0),
               child: Container(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0,16.0,0.0,12.0),
-                      child: Text("Hello, Jane.", style: TextStyle(fontSize: 30.0, color: Colors.white, fontWeight: FontWeight.w400),),
+                      padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
+                      child: Text("Hello, Jane.", style: TextStyle(
+                          fontSize: 30.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400),),
                     ),
-                    Text("You have ${cardsList.length} groups.", style: TextStyle(fontSize: 15.0, color: Colors.white, fontWeight: FontWeight.w400),),
-                    Text("TODAY : JUL 21, 2018", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
+                    Text("You have ${cardsList.length} groups.",
+                      style: TextStyle(fontSize: 15.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400),),
+                    Text("TODAY : JUL 21, 2018", style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w400),),
                   ],
                 ),
               ),
             ),
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 30.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 0.0, vertical: 30.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Row(),
                     Container(
                       height: 400.0,
-                      child: ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: cardsList.length,
-                        controller: scrollController,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, position) {
-                          return GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => AdminDetailPage(cardsList[position].cardTitle)));
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Card(
-                                child: Container(
-                                  width: 300.0,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text("${cardsList[position].cardTitle}", style: TextStyle(fontSize: 28.0),),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                              child: Text("Attend: ${cardsList[position].attendNum}", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                              child: Text("Attend: ${cardsList[position].absentNum}", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                              child: Text("${(cardsList[position].attendNum / cardsList[position].total * 100).toStringAsFixed(1)}%", style: TextStyle(fontSize: 28.0),),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: LinearProgressIndicator(value: cardsList[position].attendNum / cardsList[position].total,),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0)
-                                ),
-                              ),
-                            ),
-                            onHorizontalDragEnd: (details) {
-                              animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-                              curvedAnimation = CurvedAnimation(parent: animationController, curve: Curves.fastOutSlowIn);
-                              animationController.addListener(() {
-                                setState(() {
-                                  currentColor = colorTween.evaluate(curvedAnimation);
-                                });
-                              });
-                              if(details.velocity.pixelsPerSecond.dx > 0) {
-                                if(cardIndex > 0) {
-                                  cardIndex--;
-                                  colorTween = ColorTween(begin:currentColor,end:appColors[cardIndex]);
-                                }
-                              }else {
-                                if(cardIndex < cardsList.length - 1) {
-                                  cardIndex++;
-                                  colorTween = ColorTween(begin: currentColor,
-                                      end: appColors[cardIndex]);
-                                }
-                              }
-                              setState(() {
-                                scrollController.animateTo((cardIndex)*324.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
-                              });
-                              colorTween.animate(curvedAnimation);
-                              animationController.forward( );
-                            },
-                          );
-                        },
-                      ),
+                      child: ListModule(cardsList),
+//                      child: ListView.builder(
+//                        physics: NeverScrollableScrollPhysics(),
+//                        itemCount: cardsList.length,
+//                        controller: scrollController,
+//                        scrollDirection: Axis.horizontal,
+//                        itemBuilder: (context, position) {
+//                          return GestureDetector(
+//                            onTap: (){
+//                              Navigator.push(context, MaterialPageRoute(builder: (_) => AdminDetailPage(cardsList[position].cardTitle)));
+//                            },
+//                            child: Padding(
+//                              padding: const EdgeInsets.all(10.0),
+//                              child: Card(
+//                                child: Container(
+//                                  width: 300.0,
+//                                  child: Column(
+//                                    crossAxisAlignment: CrossAxisAlignment.start,
+//                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                    children: <Widget>[
+//                                      Padding(
+//                                        padding: const EdgeInsets.all(20.0),
+//                                        child: Row(
+//                                          mainAxisAlignment: MainAxisAlignment.center,
+//                                          children: <Widget>[
+//                                            Text("${cardsList[position].cardTitle}", style: TextStyle(fontSize: 28.0),),
+//                                          ],
+//                                        ),
+//                                      ),
+//                                      Padding(
+//                                        padding: const EdgeInsets.all(20.0),
+//                                        child: Column(
+//                                          crossAxisAlignment: CrossAxisAlignment.start,
+//                                          children: <Widget>[
+//                                            Padding(
+//                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+//                                              child: Text("Attend: ${cardsList[position].attendNum}", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
+//                                            ),
+//                                            Padding(
+//                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+//                                              child: Text("Attend: ${cardsList[position].absentNum}", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
+//                                            ),
+//                                            Padding(
+//                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+//                                              child: Text("${(cardsList[position].attendNum / cardsList[position].total * 100).toStringAsFixed(1)}%", style: TextStyle(fontSize: 28.0),),
+//                                            ),
+//                                            Padding(
+//                                              padding: const EdgeInsets.all(8.0),
+//                                              child: LinearProgressIndicator(value: cardsList[position].attendNum / cardsList[position].total,),
+//                                            ),
+//                                          ],
+//                                        ),
+//                                      ),
+//                                    ],
+//                                  ),
+//                                ),
+//                                shape: RoundedRectangleBorder(
+//                                    borderRadius: BorderRadius.circular(10.0)
+//                                ),
+//                              ),
+//                            ),
+//                            onHorizontalDragEnd: (details) {
+//                              animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+//                              curvedAnimation = CurvedAnimation(parent: animationController, curve: Curves.fastOutSlowIn);
+//                              animationController.addListener(() {
+//                                setState(() {
+//                                  currentColor = colorTween.evaluate(curvedAnimation);
+//                                });
+//                              });
+//                              if(details.velocity.pixelsPerSecond.dx > 0) {
+//                                if(cardIndex > 0) {
+//                                  cardIndex--;
+//                                  colorTween = ColorTween(begin:currentColor,end:appColors[cardIndex]);
+//                                }
+//                              }else {
+//                                if(cardIndex < cardsList.length - 1) {
+//                                  cardIndex++;
+//                                  colorTween = ColorTween(begin: currentColor,
+//                                      end: appColors[cardIndex]);
+//                                }
+//                              }
+//                              setState(() {
+//                                scrollController.animateTo((cardIndex)*324.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+//                              });
+//                              colorTween.animate(curvedAnimation);
+//                              animationController.forward( );
+//                            },
+//                          );
+//                        },
+//                      ),
                     ),
                   ],
                 )
@@ -190,13 +205,16 @@ class _AdminMainState extends State<AdminMainPage> with TickerProviderStateMixin
               children: <Widget>[
                 FloatingActionButton(
                   onPressed: () {
-//                    String newGrooupName = (Navigator.push(context, MaterialPageRoute(builder: (_) => AdminAddPage()))).toString();
-//                    cardsList.add(Cards(newGrooupName, 0, 0));
-//                    setState(() {
-//                      print(cardsList[cardsList.length - 1].cardTitle);
-//                    });
-                  addNewGroup();
+                    Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AdminAddPage()),)
+                        .then((value) {
+                      setState(() {
+                        if(value != null && value != '')
+                          cardsList.add(Cards(value, 0, 1));
+                      });
+                    });
                   },
+//                  addNewGroup();
                   child: Icon(Icons.add, color: Colors.black, size: 35.0,),
                   backgroundColor: Colors.white,
                 ),
@@ -205,14 +223,119 @@ class _AdminMainState extends State<AdminMainPage> with TickerProviderStateMixin
           ],
         ),
       ),
-      drawer: Drawer(),
+//      drawer: Drawer(),
     );
   }
-  void addNewGroup()async {
-    String newGroupName = await Navigator.push(context, MaterialPageRoute(builder: (_) => AdminAddPage()));
-//    cardsList.add(Cards(newGroupName, 0, 1));
-    setState(() {
-//      print(cardsList[cardsList.length - 1].cardTitle);
-    });
+}
+
+class ListModule extends StatefulWidget {
+  _ListModuleState createState() => _ListModuleState(cardsList);
+  List<Cards> cardsList;
+
+  ListModule(this.cardsList);
+}
+
+class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
+
+  _ListModuleState(this.cardsList);
+
+  List<Cards> cardsList;
+
+  var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
+  var cardIndex = 0;
+  var itemCount;
+
+  ScrollController scrollController;
+  AnimationController animationController;
+  ColorTween colorTween;
+  CurvedAnimation curvedAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController = new ScrollController();
+  }
+
+  Widget build(BuildContext context){
+    return ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: cardsList.length,
+      controller: scrollController,
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (context, position) {
+        return GestureDetector(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (_) => AdminDetailPage(cardsList[position].cardTitle)));
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Card(
+              child: Container(
+                width: 300.0,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("${cardsList[position].cardTitle}", style: TextStyle(fontSize: 28.0),),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                            child: Text("Attend: ${cardsList[position].attendNum}", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                            child: Text("Attend: ${cardsList[position].absentNum}", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                            child: Text("${(cardsList[position].attendNum / cardsList[position].total * 100).toStringAsFixed(1)}%", style: TextStyle(fontSize: 28.0),),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: LinearProgressIndicator(value: cardsList[position].attendNum / cardsList[position].total,),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)
+              ),
+            ),
+          ),
+          onHorizontalDragEnd: (details) {
+            animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 100));
+            curvedAnimation = CurvedAnimation(parent: animationController, curve: Curves.fastOutSlowIn);
+            if(details.velocity.pixelsPerSecond.dx > 0) {
+              if(cardIndex > 0) {
+                cardIndex--;
+              }
+            } else {
+              if(cardIndex < cardsList.length - 1) {
+                cardIndex++;
+              }
+            }
+            setState(() {
+              scrollController.animateTo((cardIndex)*325.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+            });
+            animationController.forward( );
+          },
+        );
+      },
+    );
   }
 }
