@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,8 +8,8 @@ import '../shared/buttons.dart';
 import "package:page_transition/page_transition.dart";
 
 import 'Authentication/firebase_provider.dart';
-import 'Authentication/signedin_page.dart';
-import 'Authentication/signin_page.dart';
+import 'SignUp_Page.dart';
+import 'SignUp_Choice_Page.dart';
 
 class HomePage extends StatefulWidget {
   final String pageTitle;
@@ -24,13 +25,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-
     fp = Provider.of<FirebaseProvider>(context);
 
     logger.d("user: ${fp.getUser()}");
     if (fp.getUser() != null && fp.getUser().isEmailVerified == true) {
-      return SignedInPage();
+      return SignedInPage(null);
     } else {
       return Scaffold(
         body: Center(
@@ -47,14 +46,14 @@ class _HomePageState extends State<HomePage> {
                   width: 200,
                   margin: EdgeInsets.only(bottom: 0),
                   child: froyoFlatBtn('Sign In', (){
-                    Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rotate, duration: Duration(seconds: 1),  child: SignInPage()));
+                    Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rotate, duration: Duration(seconds: 1),  child: SignUpChoicePage()));
                   }),
                 ),
                 Container(
                   width: 200,
                   padding: EdgeInsets.all(0),
                   child: froyoOutlineBtn('Sign Up', (){
-                    Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rotate, duration: Duration(seconds: 1),  child: SignInPage()));
+                    Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rotate, duration: Duration(seconds: 1),  child: SignUpChoicePage()));
                   }),
                 ),
                 Container(
@@ -62,8 +61,6 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
-
-
                   ),
                 )
               ],
@@ -72,7 +69,5 @@ class _HomePageState extends State<HomePage> {
       );
       //return SignInPage();
     }
-
-
   }
 }

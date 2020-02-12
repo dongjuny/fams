@@ -29,7 +29,7 @@ class _SignInPageState extends State<SignInPages> {
         actions: <Widget>[
           FlatButton(
             onPressed: () {
-              Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft,  child: Dashboard()));
+              Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft,  child: UserMainPage()));
 
             },
             child: Text('Sign Up', style: contrastText),
@@ -49,7 +49,7 @@ class _SignInPageState extends State<SignInPages> {
               children: <Widget>[
                 Text('Welcome to FAMS', style: h3),
                 Text('User Login', style: taglineText),
-                fryoTextInput('이메일'),
+                //fryoTextInput('이메일'),
                 fryoPasswordInput('비밀번호'),
                 FlatButton(
                   onPressed: () {},
@@ -62,7 +62,7 @@ class _SignInPageState extends State<SignInPages> {
               right: -15,
               child: FlatButton(
                 onPressed: () {
-                    Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: Dashboard()));
+                    Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserMainPage()));
                 },
                 color: primaryColor,
                 padding: EdgeInsets.all(13),

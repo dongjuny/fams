@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import './colors.dart';
 import './styles.dart';
 
-Container fryoTextInput(String hintText,
+Container fryoTextInput(String hintText, TextEditingController temp,
     {onTap, onChanged, onEditingComplete, onSubmitted}) {
   return Container(
     margin: EdgeInsets.only(top: 13),
@@ -19,6 +19,7 @@ Container fryoTextInput(String hintText,
           focusedBorder: inputFieldFocusedBorderStyle,
           contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           border: inputFieldDefaultBorderStyle),
+      controller: temp,
     ),
   );
 }
