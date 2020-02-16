@@ -14,13 +14,16 @@ class AdminMainPage extends StatefulWidget {
 
 class Cards {
   String cardTitle;
+  String startTime;
+  String endTime;
+  String id;
+  String organization;
+
   int attendNum;
   int absentNum;
   int total;
 
-  Cards(this.cardTitle, this.attendNum, this.absentNum) {
-    this.total = attendNum + absentNum;
-  }
+  Cards(this.cardTitle, this.startTime, this.endTime, this.id, this.organization);
 }
 
 class _AdminMainState extends State<AdminMainPage> {
@@ -34,39 +37,33 @@ class _AdminMainState extends State<AdminMainPage> {
     Color.fromRGBO(111, 194, 173, 1.0)
   ];
 
-//
-//  var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
   var cardIndex = 0;
 
-//  var itemCount;
-//
-//  ScrollController scrollController;
-
-  List<Cards> cardsList = [
-    Cards("Group A", 9, 10),
-    Cards("Group B", 100, 1),
-    Cards("Group C", 50, 3),
-    Cards("Group D", 9, 10),
-    Cards("Group E", 100, 1),
-    Cards("Group F", 50, 3)
-  ];
-
-//  AnimationController animationController;
-//  ColorTween colorTween;
-//  CurvedAnimation curvedAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-//    scrollController = new ScrollController();
-//    itemCount = cardsList.length;
-  }
+  List<Cards> cardsList = new List();
 
   FirebaseProvider fp;
   final Stream<int> stream = Stream.periodic(Duration(seconds: 1), (int x) => x);
 
   String a_name = '';
   String a_organization = '';
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      Firestore.instance.collection('Group').getDocuments().then((QuerySnapshot snap) {
+        snap.documents.forEach((doc) =>
+            cardsList.add(Cards(
+                "${doc['name']}",
+                "${doc['startTime']}",
+                "${doc['endTime']}",
+                "${doc['id']}",
+                "${doc['organization']}"))
+        );
+      });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +123,7 @@ class _AdminMainState extends State<AdminMainPage> {
                     Row(),
                     Container(
                       height: 400.0,
-                      child: ListModule(cardsList: cardsList),
+                      child: cardsList.length == 0 ? EmptyCardModule() :  ListModule(cardsList: cardsList),
                     ),
                   ],
                 )
@@ -141,7 +138,7 @@ class _AdminMainState extends State<AdminMainPage> {
                         .then((value) {
                       setState(() {
                         if(value != null && value != '')
-                          cardsList.add(Cards(value, 0, 1));
+                          cardsList.add(Cards(value, null, null, null, null));
                       });
                     });
                   },
@@ -195,6 +192,7 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
   }
 
   Widget build(BuildContext context){
+    print("@@@@@@@@@2");
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
       itemCount: cardsList.length,
@@ -276,4 +274,41 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
       },
     );
   }
+}
+
+class EmptyCardModule extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Center(
+        child: Card(
+          child: Container(
+            width: 300.0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text("Please add new group", style: TextStyle(fontSize: 20.0, color: Colors.white),),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0)
+          ),
+          color: Colors.transparent,
+        ),
+      )
+    );
+  }
+
 }

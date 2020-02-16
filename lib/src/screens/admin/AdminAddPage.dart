@@ -12,13 +12,12 @@ class AdminAddPage extends StatefulWidget {
 class User {
   String name;
   bool isAttend;
+  String uid;
 
-  User(this.name, this.isAttend);
+  User(this.name, this.isAttend, this.uid);
 }
 
-class _AdminAddState extends State<AdminAddPage>{
-
-
+class _AdminAddState extends State<AdminAddPage> {
   FirebaseProvider fp;
 
   var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
@@ -26,17 +25,7 @@ class _AdminAddState extends State<AdminAddPage>{
   String startTime = "Not set";
   String endTime = "Not set";
 
-  List<User> usersList = [
-    User('user A', true),
-    User('user B', true),
-    User('user C', false),
-    User('user D', true),
-    User('user E', true),
-    User('user F', false),
-    User('user G', false),
-    User('user H', true),
-    User('user I', true),
-  ];
+  String org = "";
 
   List<User> selectedUsers = new List();
 
@@ -53,24 +42,26 @@ class _AdminAddState extends State<AdminAddPage>{
     scrollController = new ScrollController();
   }
 
+  final Stream<int> stream =
+  Stream.periodic(Duration(seconds: 1), (int x) => x);
+
+  List<User> usersList = new List();
+
   @override
   Widget build(BuildContext context) {
+
     fp = Provider.of<FirebaseProvider>(context);
-
-
-     // a_organization = "${doc['organization']}";
-
-    Firestore.instance
-        .collection("User")
-        .getDocuments().then((QuerySnapshot snap) {
-          snap.documents.forEach((doc) => print('${doc['name']}'));
+    Firestore.instance.collection('Admin').document(fp.getUser().uid).get().then((docc) {
+      org = "${docc['organization']}";
     });
 
-
-    return new Scaffold(
+    return Scaffold(
       backgroundColor: currentColor,
       appBar: new AppBar(
-        title: new Text("ADMIN", style: TextStyle(fontSize: 16.0),),
+        title: new Text(
+          "ADMIN",
+          style: TextStyle(fontSize: 16.0),
+        ),
         backgroundColor: currentColor,
         centerTitle: true,
         elevation: 10.0,
@@ -80,7 +71,8 @@ class _AdminAddState extends State<AdminAddPage>{
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5.0),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5.0),
               child: Card(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,7 +82,11 @@ class _AdminAddState extends State<AdminAddPage>{
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text("Add Group Setting", style: TextStyle(fontSize: 15.0, color: Colors.black54),),
+                          Text(
+                            "Add Group Setting",
+                            style: TextStyle(
+                                fontSize: 15.0, color: Colors.black54),
+                          ),
                         ],
                       ),
                     ),
@@ -101,8 +97,12 @@ class _AdminAddState extends State<AdminAddPage>{
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Text("Name", style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400)),
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Text("Name",
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.w400)),
                           ),
                           Expanded(
                               child: Padding(
@@ -115,8 +115,7 @@ class _AdminAddState extends State<AdminAddPage>{
                                   ),
                                   controller: nameController,
                                 ),
-                              )
-                          ),
+                              )),
                         ],
                       ),
                     ),
@@ -126,8 +125,12 @@ class _AdminAddState extends State<AdminAddPage>{
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Text("ID", style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400)),
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Text("ID",
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.w400)),
                           ),
                           Expanded(
                               child: Padding(
@@ -140,20 +143,19 @@ class _AdminAddState extends State<AdminAddPage>{
                                   ),
                                   controller: idController,
                                 ),
-                              )
-                          ),
+                              )),
                         ],
                       ),
                     ),
                   ],
                 ),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0)
-                ),
+                    borderRadius: BorderRadius.circular(10.0)),
               ),
             ),
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5.0),
+                padding:
+                const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5.0),
                 child: Column(
                   children: <Widget>[
                     Card(
@@ -167,54 +169,77 @@ class _AdminAddState extends State<AdminAddPage>{
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
 //                                Icon(Icons.add, color: Colors.transparent,),
-                                Text("Add Users", style: TextStyle(fontSize: 15.0, color: Colors.black54),),
+                                Text(
+                                  "Add Users",
+                                  style: TextStyle(
+                                      fontSize: 15.0, color: Colors.black54),
+                                ),
 //                                Icon(Icons.add, color: Colors.grey,),
                               ],
                             ),
                           ),
+
                           Divider(),
                           Container(
-                              height: 160.0,
-                              child: ListView(
-//                              padding: EdgeInsets.symmetric(horizontal: 5.0),
-                                children: usersList
-                                    .map((data) {
-                                  bool saved = selectedUsers.contains(data);
-                                  return Column(
-                                    children: <Widget>[
-                                      ListTile(
-                                        leading: Icon(Icons.person),
-                                        trailing: Icon(Icons.check, color: saved ? Colors.red : Colors.black54,),
-                                        title: Row(
-                                          children: <Widget>[
-                                            Text(data.name),
-                                          ],
-                                        ),
-                                        onTap: () {
-                                          setState(() {
-                                            saved ? selectedUsers.remove(data) : selectedUsers.add(data);
-                                          });
-                                        },
-                                      ),
-                                      Divider(),
-                                    ],
-                                  );
-                                }).toList(),
-                              )
-
-
+                            height: 160.0,
+                            child: StreamBuilder<QuerySnapshot>(
+                              stream: Firestore.instance
+                                  .collection('User')
+                                  .snapshots(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                                if (0 == usersList.length)
+                                  snapshot.data.documents.forEach((doc) => usersList.add(new User('${doc['name']}', true, '${doc['uid']}')));
+                                if (snapshot.hasError)
+                                  return Text("Error: ${snapshot.error}");
+                                switch (snapshot.connectionState) {
+                                  case ConnectionState.waiting:
+                                    return Text("Loading...");
+                                  default:
+                                    return
+                                      ListView(
+                                        children: usersList.map((data) {
+                                          bool saved = selectedUsers.contains(data);
+                                          return Column(
+                                            children: <Widget>[
+                                              ListTile(
+                                                leading: Icon(Icons.person),
+                                                trailing: Icon(
+                                                  Icons.check,
+                                                  color: saved ? Colors.red : Colors.black54,
+                                                ),
+                                                title: Row(
+                                                  children: <Widget>[
+                                                    Text(data.name),
+                                                  ],
+                                                ),
+                                                onTap: () {
+                                                  setState(() {
+                                                    saved
+                                                        ? selectedUsers.remove(data)
+                                                        : selectedUsers.add(data);
+                                                  });
+                                                },
+                                              ),
+                                              Divider(),
+                                            ],
+                                          );
+                                        }).toList(),
+                                      );
+                                }
+                              },
+                            ),
                           ),
                         ],
                       ),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)
-                      ),
+                          borderRadius: BorderRadius.circular(10.0)),
                     ),
                   ],
-                )
-            ),
+                )),
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5.0),
+                padding:
+                const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5.0),
                 child: Column(
                   children: <Widget>[
                     Card(
@@ -227,7 +252,11 @@ class _AdminAddState extends State<AdminAddPage>{
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text("Time Setting", style: TextStyle(fontSize: 15.0, color: Colors.black54),),
+                                Text(
+                                  "Time Setting",
+                                  style: TextStyle(
+                                      fontSize: 15.0, color: Colors.black54),
+                                ),
                               ],
                             ),
                           ),
@@ -235,35 +264,46 @@ class _AdminAddState extends State<AdminAddPage>{
                           Container(
                               height: 130.0,
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                        child: Text("Start", style: TextStyle(fontSize: 15.0),),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10.0),
+                                        child: Text(
+                                          "Start",
+                                          style: TextStyle(fontSize: 15.0),
+                                        ),
                                       ),
                                       RaisedButton(
                                         shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(5.0)),
+                                            borderRadius:
+                                            BorderRadius.circular(5.0)),
                                         elevation: 4.0,
                                         onPressed: () {
                                           DatePicker.showTimePicker(context,
                                               theme: DatePickerTheme(
                                                 containerHeight: 210.0,
                                               ),
-                                              showTitleActions: true, onConfirm: (time) {
+                                              showTitleActions: true,
+                                              onConfirm: (time) {
                                                 print('confirm $time');
-                                                startTime = '${time.hour} : ${time.minute} : ${time.second}';
+                                                startTime =
+                                                '${time.hour} : ${time.minute} : ${time.second}';
                                                 setState(() {});
-                                              }, currentTime: DateTime.now(), locale: LocaleType.en);
+                                              },
+                                              currentTime: DateTime.now(),
+                                              locale: LocaleType.en);
                                           setState(() {});
                                         },
                                         child: Container(
                                           alignment: Alignment.center,
                                           height: 50.0,
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Row(
                                                 children: <Widget>[
@@ -278,8 +318,11 @@ class _AdminAddState extends State<AdminAddPage>{
                                                         Text(
                                                           " $startTime",
                                                           style: TextStyle(
-                                                              color: Colors.teal,
-                                                              fontWeight: FontWeight.bold,
+                                                              color:
+                                                              Colors.teal,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .bold,
                                                               fontSize: 18.0),
                                                         ),
                                                       ],
@@ -304,30 +347,40 @@ class _AdminAddState extends State<AdminAddPage>{
                                   Row(
                                     children: <Widget>[
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                        child: Text("end  ", style: TextStyle(fontSize: 15.0),),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10.0),
+                                        child: Text(
+                                          "end  ",
+                                          style: TextStyle(fontSize: 15.0),
+                                        ),
                                       ),
                                       RaisedButton(
                                         shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(5.0)),
+                                            borderRadius:
+                                            BorderRadius.circular(5.0)),
                                         elevation: 4.0,
                                         onPressed: () {
                                           DatePicker.showTimePicker(context,
                                               theme: DatePickerTheme(
                                                 containerHeight: 210.0,
                                               ),
-                                              showTitleActions: true, onConfirm: (time) {
+                                              showTitleActions: true,
+                                              onConfirm: (time) {
                                                 print('confirm $time');
-                                                endTime = '${time.hour} : ${time.minute} : ${time.second}';
+                                                endTime =
+                                                '${time.hour} : ${time.minute} : ${time.second}';
                                                 setState(() {});
-                                              }, currentTime: DateTime.now(), locale: LocaleType.en);
+                                              },
+                                              currentTime: DateTime.now(),
+                                              locale: LocaleType.en);
                                           setState(() {});
                                         },
                                         child: Container(
                                           alignment: Alignment.center,
                                           height: 50.0,
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Row(
                                                 children: <Widget>[
@@ -342,8 +395,11 @@ class _AdminAddState extends State<AdminAddPage>{
                                                         Text(
                                                           " $endTime",
                                                           style: TextStyle(
-                                                              color: Colors.teal,
-                                                              fontWeight: FontWeight.bold,
+                                                              color:
+                                                              Colors.teal,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .bold,
                                                               fontSize: 18.0),
                                                         ),
                                                       ],
@@ -351,7 +407,8 @@ class _AdminAddState extends State<AdminAddPage>{
                                                   )
                                                 ],
                                               ),
-                                              Text("  Change",
+                                              Text(
+                                                "  Change",
                                                 style: TextStyle(
                                                     color: Colors.teal,
                                                     fontWeight: FontWeight.bold,
@@ -365,21 +422,35 @@ class _AdminAddState extends State<AdminAddPage>{
                                     ],
                                   ),
                                 ],
-                              )
-                          )
+                              ))
                         ],
                       ),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)
-                      ),
+                          borderRadius: BorderRadius.circular(10.0)),
                     ),
                   ],
-                )
-            ),
+                )),
             RaisedButton(
               child: Text('Add'),
               color: Colors.white,
               onPressed: () {
+                print(org);
+                Firestore.instance.collection('Group').document(nameController.text).setData({
+                  'name' : nameController.text,
+                  'endTime': endTime,
+                  'organization': org,
+                  'startTime' : startTime,
+                  'id' : idController.text,
+                  'adminUid' : fp.getUser().uid
+                });
+
+                for (int i=0; i<selectedUsers.length; i++) {
+                  Firestore.instance.collection('Group').document(nameController.text).collection('User').document(selectedUsers[i].uid).setData({
+                    'name': selectedUsers[i].name,
+                    'uid': selectedUsers[i].uid
+                  });
+                }
+
                 Navigator.pop(context, nameController.text);
               },
             ),

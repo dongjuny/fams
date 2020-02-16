@@ -54,7 +54,7 @@ class SignedInPageState extends State<SignedInPage> {
       });
 
       if(auth == 'User')
-        return TakePictureScreen();
+        return UserMainPage();
       else if(auth == 'Admin')
         return AdminMainPage();
 
@@ -100,13 +100,14 @@ class SignedInPageState extends State<SignedInPage> {
                           Firestore.instance.collection(loginAuth).document(fp.getUser().uid).setData({
                             'name': newName.text,
                             'organization': newOrganization.text,
-                            'auth' : loginAuth
+                            'auth' : loginAuth,
+                            'uid' : fp.getUser().uid
                           });
 
                           if (loginAuth == 'Admin')
                             Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: AdminMainPage()));
                           else if (loginAuth == 'User')
-                            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: TakePictureScreen()));
+                            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserMainPage()));
                         },
                         color: primaryColor,
                         padding: EdgeInsets.all(13),
