@@ -67,9 +67,15 @@ class FirestoreFirstDemoState extends State<FirestoreFirstDemo> {
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               child: Column(
-                                children: <Widget>[                                  Row(                                    mainAxisAlignment:                                        MainAxisAlignment.spaceBetween,                                    children: <Widget>[                                      Text(                                        document[fnName],
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        document[fnName],
                                   style: TextStyle(
-                                    color: Colors.blueGrey,
+                                    color: Colors.black,
                                     fontSize: 17,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -77,15 +83,15 @@ class FirestoreFirstDemoState extends State<FirestoreFirstDemo> {
                                   Text(
                                     dt.toString(),
                                     style:
-                                    TextStyle(color: Colors.grey[600]),
+                                    TextStyle(color: Colors.red),
                                   ),
                                 ],
                                 ),
                                   Container(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      document[fnDescription],
-                                      style: TextStyle(color: Colors.black54),
+                                      document[fnName],
+                                      style: TextStyle(color: Colors.red),
                                     ),
                                   )
                                 ],
@@ -120,11 +126,14 @@ class FirestoreFirstDemoState extends State<FirestoreFirstDemo> {
 
   // 문서 조회 (Read)
   void showDocument(String documentID) {
-    Firestore.instance.collection(colName).document(documentID).get().then((doc) {
+    Firestore.instance
+        .collection(colName)
+        .document(documentID)
+        .get()
+        .then((doc) {
       showReadDocSnackBar(doc);
     });
   }
-
   // 문서 갱신 (Update)
   void updateDoc(String docID, String name, String description) {
     Firestore.instance.collection(colName).document(docID).updateData({
@@ -196,7 +205,7 @@ class FirestoreFirstDemoState extends State<FirestoreFirstDemo> {
           backgroundColor: Colors.deepOrangeAccent,
           duration: Duration(seconds: 5),
           content: Text(
-              "$fnName: ${doc[fnName]}\n$fnDescription: ${doc[fnName]}"
+              "$fnName: ${doc[fnName]}\n$fnDescription: ${doc[fnDescription]}"
                   "\n$fnDatetime: ${timestampToStrDateTime(doc[fnDatetime])}"),
           action: SnackBarAction(
             label: "Done",

@@ -1,7 +1,8 @@
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fams/src/screens/Authentication/firebase_provider.dart';
-import 'package:fams/src/screens/admin/AdminAddPage.dart';
 import 'package:fams/src/screens/admin/AdminDetailPage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,37 +47,19 @@ class _UserMainPageState extends State<UserMainPage> {
   ];
 
   String u_name = '';
-  String u_organization;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  String u_organization = '';
 
 
   FirebaseProvider fp;
-
+  final Stream<int> stream = Stream.periodic(Duration(seconds: 1), (int x) => x);
   @override
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
 
-    Firestore.instance.collection('User').document('uid1').get().then((doc) {
-//      print("하아");
-      setState(() {
-        u_name = "${doc['name']}";
-      });
-    });
-
-    print("tqtqtqtqtq");
-    print(u_name);
-    print(u_organization);
-
     return new Scaffold(
         backgroundColor: appColors[cardIndex],
         appBar: new AppBar(
-          title: new Text(fp
-              .getUser()
-              .uid, style: TextStyle(fontSize: 16.0),),
+          title: new Text('User', style: TextStyle(fontSize: 16.0),),
           backgroundColor: appColors[cardIndex],
           centerTitle: true,
           elevation: 10.0,
@@ -85,6 +68,23 @@ class _UserMainPageState extends State<UserMainPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              StreamBuilder<int> (
+                stream: stream, //
+                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                  Firestore.instance.collection('User').document(fp.getUser().uid).get().then((doc) {
+                    u_name = "${doc['name']}";
+                    u_organization = "${doc['organization']}";
+                  });
+                  return Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                          0.0, 16.0, 0.0, 12.0),
+                      child: Text("Hello, $u_name", style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400),),
+                    ); // 1초에 한번씩 업데이트 된다.
+                },
+              ),
               Row(),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -93,14 +93,6 @@ class _UserMainPageState extends State<UserMainPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                            0.0, 16.0, 0.0, 12.0),
-                        child: Text("Hello, $u_name", style: TextStyle(
-                            fontSize: 30.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400),),
-                      ),
                       Text("You have ${cardsList.length} groups.",
                         style: TextStyle(fontSize: 15.0,
                             color: Colors.white,

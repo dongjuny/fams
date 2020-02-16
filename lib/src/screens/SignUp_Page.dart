@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../shared/styles.dart';
 import '../shared/colors.dart';
 import '../shared/inputFields.dart';
+import 'admin/AdminMainPage.dart';
 
 SignedInPageState pageState;
 
@@ -33,8 +34,6 @@ class SignedInPageState extends State<SignedInPage> {
   String loginAuth;
   SignedInPageState(this.loginAuth);
 
-
-
   TextEditingController newName = TextEditingController();
   TextEditingController newOrganization = TextEditingController();
 
@@ -46,7 +45,18 @@ class SignedInPageState extends State<SignedInPage> {
     fp = Provider.of<FirebaseProvider>(context);
 
     if (fp.getUser() != null && fp.getUser().isEmailVerified == true && loginAuth != 'Admin' && loginAuth != 'User') {
-      return UserMainPage();
+      String auth;
+      setState(() {
+        Firestore.instance.collection('User').document(fp.getUser().uid).get().then((doc) {
+          auth = "${doc['auth']}";
+        });
+      });
+
+      if(auth == 'User')
+        return AdminMainPage();
+      else if(auth == 'Admin')
+        return AdminMainPage();
+
     }else {
       return Scaffold(
           appBar: AppBar(
@@ -86,13 +96,14 @@ class SignedInPageState extends State<SignedInPage> {
                       right: -15,
                       child: FlatButton(
                         onPressed: () {
-                          Firestore.instance.collection(loginAuth).document(fp.getUser().uid).setData({
+                          Firestore.instance.collection('User').document(fp.getUser().uid).setData({
                             'name': newName.text,
                             'organization': newOrganization.text,
+                            'auth' : loginAuth
                           });
 
                           if (loginAuth == 'Admin')
-                            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserMainPage()));
+                            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: AdminMainPage()));
                           else if (loginAuth == 'User')
                             Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserMainPage()));
                         },

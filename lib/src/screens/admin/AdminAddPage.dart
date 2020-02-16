@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fams/src/screens/Authentication/firebase_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:provider/provider.dart';
 
 class AdminAddPage extends StatefulWidget {
   @override
@@ -14,6 +17,9 @@ class User {
 }
 
 class _AdminAddState extends State<AdminAddPage>{
+
+
+  FirebaseProvider fp;
 
   var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
 
@@ -45,11 +51,17 @@ class _AdminAddState extends State<AdminAddPage>{
   void initState() {
     super.initState();
     scrollController = new ScrollController();
-//    selectedUsers = new List.filled(usersList.length, false);
   }
 
   @override
   Widget build(BuildContext context) {
+    fp = Provider.of<FirebaseProvider>(context);
+
+    Stream<QuerySnapshot> currentStream;
+
+    var s = Firestore.instance.collection('User').getDocuments().then(onValue)
+
+
     return new Scaffold(
       backgroundColor: currentColor,
       appBar: new AppBar(
@@ -184,6 +196,8 @@ class _AdminAddState extends State<AdminAddPage>{
                                   );
                                 }).toList(),
                               )
+
+
                           ),
                         ],
                       ),

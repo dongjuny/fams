@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fams/src/screens/Authentication/firebase_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import 'AdminDetailPage.dart';
 import 'AdminAddPage.dart';
 
@@ -59,8 +62,15 @@ class _AdminMainState extends State<AdminMainPage> {
 //    itemCount = cardsList.length;
   }
 
+  FirebaseProvider fp;
+  final Stream<int> stream = Stream.periodic(Duration(seconds: 1), (int x) => x);
+
+  String a_name = '';
+  String a_organization = '';
+
   @override
   Widget build(BuildContext context) {
+    fp = Provider.of<FirebaseProvider>(context);
     return new Scaffold(
       backgroundColor: appColors[cardIndex],
       appBar: new AppBar(
@@ -73,31 +83,40 @@ class _AdminMainState extends State<AdminMainPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 40.0, vertical: 0.0),
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
-                      child: Text("Hello, Jane.", style: TextStyle(
-                          fontSize: 30.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400),),
+            StreamBuilder<int> (
+              stream: stream, //
+              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                Firestore.instance.collection('User').document(fp.getUser().uid).get().then((doc) {
+                  a_name = "${doc['name']}";
+                  a_organization = "${doc['organization']}";
+                });
+                return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40.0, vertical: 0.0),
+                    child: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
+                            child: Text("Hello, $a_name.", style: TextStyle(
+                                fontSize: 30.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400),),
+                          ),
+                          Text("You have ${cardsList.length} groups.",
+                            style: TextStyle(fontSize: 15.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w400),),
+                          Text("TODAY : JUL 21, 2018", style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w400),),
+                        ],
+                      ),
                     ),
-                    Text("You have ${cardsList.length} groups.",
-                      style: TextStyle(fontSize: 15.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400),),
-                    Text("TODAY : JUL 21, 2018", style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w400),),
-                  ],
-                ),
-              ),
+                  ); // 1초에 한번씩 업데이트 된다.
+              },
             ),
+            Row(),
             Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 0.0, vertical: 30.0),
@@ -108,95 +127,6 @@ class _AdminMainState extends State<AdminMainPage> {
                     Container(
                       height: 400.0,
                       child: ListModule(cardsList: cardsList),
-//                      child: ListView.builder(
-//                        physics: NeverScrollableScrollPhysics(),
-//                        itemCount: cardsList.length,
-//                        controller: scrollController,
-//                        scrollDirection: Axis.horizontal,
-//                        itemBuilder: (context, position) {
-//                          return GestureDetector(
-//                            onTap: (){
-//                              Navigator.push(context, MaterialPageRoute(builder: (_) => AdminDetailPage(cardsList[position].cardTitle)));
-//                            },
-//                            child: Padding(
-//                              padding: const EdgeInsets.all(10.0),
-//                              child: Card(
-//                                child: Container(
-//                                  width: 300.0,
-//                                  child: Column(
-//                                    crossAxisAlignment: CrossAxisAlignment.start,
-//                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                                    children: <Widget>[
-//                                      Padding(
-//                                        padding: const EdgeInsets.all(20.0),
-//                                        child: Row(
-//                                          mainAxisAlignment: MainAxisAlignment.center,
-//                                          children: <Widget>[
-//                                            Text("${cardsList[position].cardTitle}", style: TextStyle(fontSize: 28.0),),
-//                                          ],
-//                                        ),
-//                                      ),
-//                                      Padding(
-//                                        padding: const EdgeInsets.all(20.0),
-//                                        child: Column(
-//                                          crossAxisAlignment: CrossAxisAlignment.start,
-//                                          children: <Widget>[
-//                                            Padding(
-//                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-//                                              child: Text("Attend: ${cardsList[position].attendNum}", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
-//                                            ),
-//                                            Padding(
-//                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-//                                              child: Text("Attend: ${cardsList[position].absentNum}", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
-//                                            ),
-//                                            Padding(
-//                                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-//                                              child: Text("${(cardsList[position].attendNum / cardsList[position].total * 100).toStringAsFixed(1)}%", style: TextStyle(fontSize: 28.0),),
-//                                            ),
-//                                            Padding(
-//                                              padding: const EdgeInsets.all(8.0),
-//                                              child: LinearProgressIndicator(value: cardsList[position].attendNum / cardsList[position].total,),
-//                                            ),
-//                                          ],
-//                                        ),
-//                                      ),
-//                                    ],
-//                                  ),
-//                                ),
-//                                shape: RoundedRectangleBorder(
-//                                    borderRadius: BorderRadius.circular(10.0)
-//                                ),
-//                              ),
-//                            ),
-//                            onHorizontalDragEnd: (details) {
-//                              animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-//                              curvedAnimation = CurvedAnimation(parent: animationController, curve: Curves.fastOutSlowIn);
-//                              animationController.addListener(() {
-//                                setState(() {
-//                                  currentColor = colorTween.evaluate(curvedAnimation);
-//                                });
-//                              });
-//                              if(details.velocity.pixelsPerSecond.dx > 0) {
-//                                if(cardIndex > 0) {
-//                                  cardIndex--;
-//                                  colorTween = ColorTween(begin:currentColor,end:appColors[cardIndex]);
-//                                }
-//                              }else {
-//                                if(cardIndex < cardsList.length - 1) {
-//                                  cardIndex++;
-//                                  colorTween = ColorTween(begin: currentColor,
-//                                      end: appColors[cardIndex]);
-//                                }
-//                              }
-//                              setState(() {
-//                                scrollController.animateTo((cardIndex)*324.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
-//                              });
-//                              colorTween.animate(curvedAnimation);
-//                              animationController.forward( );
-//                            },
-//                          );
-//                        },
-//                      ),
                     ),
                   ],
                 )

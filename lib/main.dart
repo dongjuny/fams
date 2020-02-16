@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
         title: 'FAMS',
-        home:HomeConnected()
+        home:FirestoreFirstDemo()
 //      home: HomePage(pageTitle: 'Welcome',)
 //        home: AdminDetailPage()
     );
