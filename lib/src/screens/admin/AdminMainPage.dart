@@ -86,7 +86,7 @@ class _AdminMainState extends State<AdminMainPage> {
             StreamBuilder<int> (
               stream: stream, //
               builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                Firestore.instance.collection('User').document(fp.getUser().uid).get().then((doc) {
+                Firestore.instance.collection('Admin').document(fp.getUser().uid).get().then((doc) {
                   a_name = "${doc['name']}";
                   a_organization = "${doc['organization']}";
                 });

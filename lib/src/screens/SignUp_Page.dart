@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fams/src/screens/SignUp_Choice_Page.dart';
 import 'package:fams/src/screens/user/DashboardPage.dart';
+import 'package:fams/src/screens/user/UserCameraTest.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'SignInPage.dart';
@@ -53,7 +54,7 @@ class SignedInPageState extends State<SignedInPage> {
       });
 
       if(auth == 'User')
-        return AdminMainPage();
+        return TakePictureScreen();
       else if(auth == 'Admin')
         return AdminMainPage();
 
@@ -96,7 +97,7 @@ class SignedInPageState extends State<SignedInPage> {
                       right: -15,
                       child: FlatButton(
                         onPressed: () {
-                          Firestore.instance.collection('User').document(fp.getUser().uid).setData({
+                          Firestore.instance.collection(loginAuth).document(fp.getUser().uid).setData({
                             'name': newName.text,
                             'organization': newOrganization.text,
                             'auth' : loginAuth
@@ -105,7 +106,7 @@ class SignedInPageState extends State<SignedInPage> {
                           if (loginAuth == 'Admin')
                             Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: AdminMainPage()));
                           else if (loginAuth == 'User')
-                            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserMainPage()));
+                            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: TakePictureScreen()));
                         },
                         color: primaryColor,
                         padding: EdgeInsets.all(13),

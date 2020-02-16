@@ -57,9 +57,14 @@ class _AdminAddState extends State<AdminAddPage>{
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
 
-    Stream<QuerySnapshot> currentStream;
 
-    var s = Firestore.instance.collection('User').getDocuments().then(onValue)
+     // a_organization = "${doc['organization']}";
+
+    Firestore.instance
+        .collection("User")
+        .getDocuments().then((QuerySnapshot snap) {
+          snap.documents.forEach((doc) => print('${doc['name']}'));
+    });
 
 
     return new Scaffold(
