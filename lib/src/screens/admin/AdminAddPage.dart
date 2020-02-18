@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fams/src/screens/Authentication/firebase_provider.dart';
+import 'package:fams/src/screens/admin/AdminMainPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class AdminAddPage extends StatefulWidget {
@@ -444,14 +446,19 @@ class _AdminAddState extends State<AdminAddPage> {
                   'adminUid' : fp.getUser().uid
                 });
 
+
+                Firestore.instance.collection('Admin').document(fp.getUser().uid).updateData({
+                  'group' : FieldValue.arrayUnion([nameController.text])
+                });
+
                 for (int i=0; i<selectedUsers.length; i++) {
                   Firestore.instance.collection('Group').document(nameController.text).collection('User').document(selectedUsers[i].uid).setData({
                     'name': selectedUsers[i].name,
                     'uid': selectedUsers[i].uid
                   });
                 }
-
-                Navigator.pop(context, nameController.text);
+                Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: AdminMainPage()));
+//                Navigator.pop(context, nameController.text);
               },
             ),
           ],

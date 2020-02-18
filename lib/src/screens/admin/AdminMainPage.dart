@@ -19,6 +19,8 @@ class Cards {
   String id;
   String organization;
 
+  List<String> user_list;
+
   int attendNum;
   int absentNum;
   int total;
@@ -28,18 +30,9 @@ class Cards {
 
 class _AdminMainState extends State<AdminMainPage> {
 
-  var appColors = [
-    Color.fromRGBO(99, 138, 223, 1.0),
-    Color.fromRGBO(231, 129, 109, 1.0),
-    Color.fromRGBO(111, 194, 173, 1.0),
-    Color.fromRGBO(99, 138, 223, 1.0),
-    Color.fromRGBO(231, 129, 109, 1.0),
-    Color.fromRGBO(111, 194, 173, 1.0)
-  ];
-
+  var appColors = Color.fromRGBO(99, 138, 223, 1.0);
   var cardIndex = 0;
 
-  List<Cards> cardsList = new List();
 
   FirebaseProvider fp;
   final Stream<int> stream = Stream.periodic(Duration(seconds: 1), (int x) => x);
@@ -47,32 +40,26 @@ class _AdminMainState extends State<AdminMainPage> {
   String a_name = '';
   String a_organization = '';
 
+  List<String> group_list = new List();
   @override
   void initState() {
     super.initState();
     setState(() {
-      Firestore.instance.collection('Group').getDocuments().then((QuerySnapshot snap) {
-        snap.documents.forEach((doc) =>
-            cardsList.add(Cards(
-                "${doc['name']}",
-                "${doc['startTime']}",
-                "${doc['endTime']}",
-                "${doc['id']}",
-                "${doc['organization']}"))
-        );
-      });
+
     });
   }
 
 
+  List<Cards> cardsList = new List();
   @override
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
-    return new Scaffold(
-      backgroundColor: appColors[cardIndex],
+    print(cardsList.length);
+    return Scaffold(
+      backgroundColor: appColors,
       appBar: new AppBar(
         title: new Text("ADMIN", style: TextStyle(fontSize: 16.0),),
-        backgroundColor: appColors[cardIndex],
+        backgroundColor: appColors,
         centerTitle: true,
         elevation: 10.0,
       ),
@@ -87,6 +74,18 @@ class _AdminMainState extends State<AdminMainPage> {
                   a_name = "${doc['name']}";
                   a_organization = "${doc['organization']}";
                 });
+                Firestore.instance.collection('Group').where('adminUid', isEqualTo: fp.getUser().uid).getDocuments().then((QuerySnapshot snap) {
+                  cardsList = new List();
+                  snap.documents.forEach((doc) =>
+                      cardsList.add(new Cards(
+                          "${doc['name']}",
+                          "${doc['startTime']}",
+                          "${doc['endTime']}",
+                          "${doc['id']}",
+                          "${doc['organization']}"))
+                  );
+                });
+
                 return Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40.0, vertical: 0.0),
@@ -107,42 +106,38 @@ class _AdminMainState extends State<AdminMainPage> {
                                 fontWeight: FontWeight.w400),),
                           Text("TODAY : JUL 21, 2018", style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.w400),),
+                          Row(),
+                          Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 0.0, vertical: 30.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(),
+                                  Container(
+                                    height: 400.0,
+                                    child: cardsList.length == 0 ? EmptyCardModule() : ListModule(cardsList: cardsList),
+                                  ),
+                                ],
+                              )
+                          ),
                         ],
                       ),
                     ),
                   ); // 1초에 한번씩 업데이트 된다.
               },
             ),
-            Row(),
-            Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 0.0, vertical: 30.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(),
-                    Container(
-                      height: 400.0,
-                      child: cardsList.length == 0 ? EmptyCardModule() :  ListModule(cardsList: cardsList),
-                    ),
-                  ],
-                )
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 FloatingActionButton(
                   onPressed: () {
-                    Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AdminAddPage()),)
-                        .then((value) {
-                      setState(() {
-                        if(value != null && value != '')
-                          cardsList.add(Cards(value, null, null, null, null));
-                      });
-                    });
+//                    Navigator.push(context,
+//                      MaterialPageRoute(builder: (context) => AdminAddPage()),).then((value) {
+//                        setState(() {});
+//                    });
+                    Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: AdminAddPage()));
                   },
-//                  addNewGroup();
                   child: Icon(Icons.add, color: Colors.black, size: 35.0,),
                   backgroundColor: Colors.white,
                 ),
@@ -165,13 +160,10 @@ class ListModule extends StatefulWidget {
 
   _ListModuleState createState() => _ListModuleState();
   final List<Cards> cardsList;
-
-//  ListModule(this.cardsList);
 }
 
 class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
 
-//  _ListModuleState(this.cardsList);
 
   List<Cards> cardsList;
 
@@ -192,22 +184,24 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
   }
 
   Widget build(BuildContext context){
-    print("@@@@@@@@@2");
+
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
       itemCount: cardsList.length,
       controller: scrollController,
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, position) {
+        String st = cardsList[position].startTime;
+        String et = cardsList[position].endTime;
         return GestureDetector(
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (_) => AdminDetailPage(cardsList[position].cardTitle)));
+            Navigator.push(context, MaterialPageRoute(builder: (_) => AdminDetailPage(cardsList[position])));
           },
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(0.0),
             child: Card(
               child: Container(
-                width: 300.0,
+                width: 280.0,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -228,19 +222,11 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                            child: Text("Attend: ${cardsList[position].attendNum}", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
+                            child: Text("StartTime: $st", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                            child: Text("Attend: ${cardsList[position].absentNum}", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                            child: Text("${(cardsList[position].attendNum / cardsList[position].total * 100).toStringAsFixed(1)}%", style: TextStyle(fontSize: 28.0),),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: LinearProgressIndicator(value: cardsList[position].attendNum / cardsList[position].total,),
+                            child: Text("EndTime: $et", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
                           ),
                         ],
                       ),
@@ -266,7 +252,7 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
               }
             }
             setState(() {
-              scrollController.animateTo((cardIndex)*325.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+              scrollController.animateTo((cardIndex)*290.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
             });
             animationController.forward( );
           },

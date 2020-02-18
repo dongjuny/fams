@@ -171,7 +171,7 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
       itemBuilder: (context, position) {
         return GestureDetector(
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (_) => AdminDetailPage(cardsList[position].cardTitle)));
+            Navigator.push(context, MaterialPageRoute(builder: (_) => AdminDetailPage(null)));
           },
           child: Padding(
             padding: const EdgeInsets.all(10.0),

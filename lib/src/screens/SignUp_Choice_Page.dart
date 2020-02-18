@@ -28,6 +28,7 @@ class SignUpChoicePageState extends State<SignUpChoicePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   FirebaseProvider fp;
 
+  var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +42,14 @@ class SignUpChoicePageState extends State<SignUpChoicePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Image.asset('images/welcome.png', width: 190, height: 190),
+//              Image.asset('images/welcome.png', width: 190),
+              Image(image: AssetImage('welcome.png'),),
               Container(
                 margin: EdgeInsets.only(bottom: 10, top: 0),
-                child: Text('Welcome to FAMS!', style: logoStyle),
+                child: Text('Welcome to FAMS!', style: TextStyle(
+                    fontSize: 30.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400),),
               ),
               Container(
                 margin: EdgeInsets.only(top: 25),
@@ -56,11 +61,8 @@ class SignUpChoicePageState extends State<SignUpChoicePage> {
               Container(
                 margin: EdgeInsets.all(0),
                 child: RaisedButton(
-                  color: Colors.green[300],
-                  child: Text(
-                    "관리자",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  color: Colors.white,
+                  child: Text("Admin",),
                   onPressed: () {
                     FocusScope.of(context).requestFocus(new FocusNode()); // 키보드 감춤
                     _signInWithGoogle('Admin');
@@ -70,11 +72,8 @@ class SignUpChoicePageState extends State<SignUpChoicePage> {
               Container(
                 margin: EdgeInsets.all(0),
                 child: RaisedButton(
-                  color: Colors.green[300],
-                  child: Text(
-                    "유저",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  color: Colors.white,
+                  child: Text("User",),
                   onPressed: () {
                     FocusScope.of(context).requestFocus(new FocusNode()); // 키보드 감춤
                     _signInWithGoogle('User');
@@ -83,7 +82,7 @@ class SignUpChoicePageState extends State<SignUpChoicePage> {
               )
             ],
           )),
-      backgroundColor: bgColor,
+      backgroundColor: currentColor,
     );
   }
 
@@ -104,7 +103,7 @@ class SignUpChoicePageState extends State<SignUpChoicePage> {
     if (result == false)
       showLastFBMessage();
     else {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => SignedInPage(auth)));
+      Navigator.push(context, MaterialPageRoute(builder: (_) => SignUpPage(auth)));
     }
   }
 

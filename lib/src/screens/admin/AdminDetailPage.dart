@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fams/src/screens/Authentication/firebase_provider.dart';
+import 'package:fams/src/screens/admin/AdminMainPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:provider/provider.dart';
 
 class AdminDetailPage extends StatefulWidget {
 
-  final String groupName;
+  Cards groupName;
 
   AdminDetailPage(this.groupName);
 
@@ -18,9 +22,10 @@ class User {
   User(this.name, this.isAttend);
 }
 
-class _AdminDetailState extends State<AdminDetailPage>{
+class _AdminDetailState extends State<AdminDetailPage> {
 
-  String groupName;
+  Cards groupName;
+
   _AdminDetailState(this.groupName);
 
   var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
@@ -29,15 +34,6 @@ class _AdminDetailState extends State<AdminDetailPage>{
   String endTime = "Not set";
 
   List<User> usersList = [
-    User('user A', true),
-    User('user B', true),
-    User('user C', false),
-    User('user D', true),
-    User('user E', true),
-    User('user F', false),
-    User('user G', false),
-    User('user H', true),
-    User('user I', true),
   ];
 
   AnimationController animationController;
@@ -51,8 +47,14 @@ class _AdminDetailState extends State<AdminDetailPage>{
     scrollController = new ScrollController();
   }
 
+  FirebaseProvider fp;
+
   @override
   Widget build(BuildContext context) {
+    fp = Provider.of<FirebaseProvider>(context);
+    String name = groupName.cardTitle;
+    String startTime = groupName.startTime;
+    String endTime = groupName.endTime;
     return new Scaffold(
       backgroundColor: currentColor,
       appBar: new AppBar(
@@ -74,13 +76,19 @@ class _AdminDetailState extends State<AdminDetailPage>{
             Row(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 0.0),
-                  child: Text("Setting for ${groupName}", style: TextStyle(fontSize: 15.0, color: Colors.white, fontWeight: FontWeight.w400)),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 40.0, vertical: 0.0),
+                  child: Text("Setting for $name", style: TextStyle(
+                      fontSize: 15.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400)),
                 ),
               ],
             ),
+
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 30.0, vertical: 5.0),
                 child: Column(
                   children: <Widget>[
                     Card(
@@ -94,36 +102,66 @@ class _AdminDetailState extends State<AdminDetailPage>{
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Icon(Icons.add, color: Colors.transparent,),
-                                Text("Users", style: TextStyle(fontSize: 15.0, color: Colors.black54),),
+                                Text("Users", style: TextStyle(
+                                    fontSize: 15.0, color: Colors.black54),),
                                 Icon(Icons.add, color: Colors.black54,),
                               ],
                             ),
                           ),
                           Divider(),
                           Container(
-                              height: 300.0,
-                              child: ListView(
+                            child: StreamBuilder<QuerySnapshot>(
+                              stream: Firestore.instance
+                                  .collection('Group').document(name).collection('User')
+                                  .snapshots(),
+
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                                if (0 == usersList.length)
+                                  snapshot.data.documents.forEach((doc) => usersList.add(new User('${doc['name']}', true)));
+                                if (snapshot.hasError)
+                                  return Text("Error: ${snapshot.error}");
+                                switch (snapshot.connectionState) {
+                                  case ConnectionState.waiting:
+                                    return Text("Loading...");
+                                  default:
+                                    return ListView(
 //                              padding: EdgeInsets.symmetric(horizontal: 5.0),
-                                children: usersList
-                                    .map((data) => Column(
-                                  children: <Widget>[
-                                    ListTile(
-                                      leading: Icon(Icons.person),
-                                      trailing: Icon(Icons.arrow_forward_ios,),
-                                      title: Row(
-                                        children: <Widget>[
-                                          Text(data.name),
-                                          Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                              child: Text(data.isAttend ? "Attend" : "Absent", style: TextStyle(fontSize: 12.0, color: Colors.grey),)
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Divider(),
-                                  ],
-                                )).toList(),
-                              )
+                                      children: usersList
+                                          .map((data) =>
+                                          Column(
+                                            children: <Widget>[
+                                              ListTile(
+                                                leading: Icon(Icons.person),
+                                                trailing: Icon(
+                                                  Icons.arrow_forward_ios,),
+                                                title: Row(
+                                                  children: <Widget>[
+                                                    Text(data.name),
+                                                    Padding(
+                                                        padding: const EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 10.0),
+                                                        child: Text(
+                                                          data.isAttend
+                                                              ? "Attend"
+                                                              : "Absent",
+                                                          style: TextStyle(
+                                                              fontSize: 12.0,
+                                                              color: Colors
+                                                                  .grey),)
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              Divider(),
+                                            ],
+                                          )).toList(),
+                                    );
+                                }
+                              },
+                            ),
+                            height: 300.0,
                           ),
                         ],
                       ),
@@ -135,7 +173,8 @@ class _AdminDetailState extends State<AdminDetailPage>{
                 )
             ),
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 30.0, vertical: 10.0),
                 child: Column(
                   children: <Widget>[
                     Card(
@@ -148,7 +187,8 @@ class _AdminDetailState extends State<AdminDetailPage>{
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text("Time Setting", style: TextStyle(fontSize: 15.0, color: Colors.black54),),
+                                Text("Time Setting : $startTime", style: TextStyle(
+                                    fontSize: 15.0, color: Colors.black54),),
                               ],
                             ),
                           ),
@@ -156,132 +196,26 @@ class _AdminDetailState extends State<AdminDetailPage>{
                           Container(
                               height: 130.0,
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceEvenly,
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                        child: Text("Start", style: TextStyle(fontSize: 15.0),),
-                                      ),
-                                      RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(5.0)),
-                                        elevation: 4.0,
-                                        onPressed: () {
-                                          DatePicker.showTimePicker(context,
-                                              theme: DatePickerTheme(
-                                                containerHeight: 210.0,
-                                              ),
-                                              showTitleActions: true, onConfirm: (time) {
-                                                print('confirm $time');
-                                                startTime = '${time.hour} : ${time.minute} : ${time.second}';
-                                                setState(() {});
-                                              }, currentTime: DateTime.now(), locale: LocaleType.en);
-                                          setState(() {});
-                                        },
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          height: 50.0,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Row(
-                                                children: <Widget>[
-                                                  Container(
-                                                    child: Row(
-                                                      children: <Widget>[
-                                                        Icon(
-                                                          Icons.access_time,
-                                                          size: 18.0,
-                                                          color: Colors.teal,
-                                                        ),
-                                                        Text(
-                                                          " $startTime",
-                                                          style: TextStyle(
-                                                              color: Colors.teal,
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 18.0),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                              Text(
-                                                "  Change",
-                                                style: TextStyle(
-                                                    color: Colors.teal,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18.0),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        color: Colors.white,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10.0),
+                                        child: Text("StartTime : ${groupName.startTime}",
+                                          style: TextStyle(fontSize: 15.0),),
                                       ),
                                     ],
                                   ),
                                   Row(
                                     children: <Widget>[
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                        child: Text("end  ", style: TextStyle(fontSize: 15.0),),
-                                      ),
-                                      RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(5.0)),
-                                        elevation: 4.0,
-                                        onPressed: () {
-                                          DatePicker.showTimePicker(context,
-                                              theme: DatePickerTheme(
-                                                containerHeight: 210.0,
-                                              ),
-                                              showTitleActions: true, onConfirm: (time) {
-                                                print('confirm $time');
-                                                endTime = '${time.hour} : ${time.minute} : ${time.second}';
-                                                setState(() {});
-                                              }, currentTime: DateTime.now(), locale: LocaleType.en);
-                                          setState(() {});
-                                        },
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          height: 50.0,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Row(
-                                                children: <Widget>[
-                                                  Container(
-                                                    child: Row(
-                                                      children: <Widget>[
-                                                        Icon(
-                                                          Icons.access_time,
-                                                          size: 18.0,
-                                                          color: Colors.teal,
-                                                        ),
-                                                        Text(
-                                                          " $endTime",
-                                                          style: TextStyle(
-                                                              color: Colors.teal,
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 18.0),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                              Text("  Change",
-                                                style: TextStyle(
-                                                    color: Colors.teal,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18.0),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        color: Colors.white,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10.0),
+                                        child: Text("endTime : $endTime  ",
+                                          style: TextStyle(fontSize: 15.0),),
                                       ),
                                     ],
                                   ),
