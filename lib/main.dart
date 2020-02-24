@@ -1,4 +1,5 @@
 
+import 'package:fams/src/screens/admin/AdminAddPage.dart';
 import 'package:fams/test.dart';
 import 'package:flutter/material.dart';
 import './src/screens/SignInPage.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
         title: 'FAMS',
-        home:HomeConnected()
+        home:AdminAddPage()
 //      home: HomePage(pageTitle: 'Welcome',)
 //        home: AdminDetailPage()
     );

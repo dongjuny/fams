@@ -51,6 +51,7 @@ class _AdminAddState extends State<AdminAddPage>{
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      resizeToAvoidBottomPadding: false,
       backgroundColor: currentColor,
       appBar: new AppBar(
         title: new Text("ADMIN", style: TextStyle(fontSize: 16.0),),
