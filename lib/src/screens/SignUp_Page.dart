@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fams/src/screens/SignUp_Choice_Page.dart';
 import 'package:fams/src/screens/user/DashboardPage.dart';
+import 'package:fams/src/screens/user/UserCameraPage.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'SignInPage.dart';
@@ -92,9 +93,9 @@ class SignedInPageState extends State<SignedInPage> {
                           });
 
                           if (loginAuth == 'Admin')
-                            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserMainPage()));
+                            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserCameraPage()));
                           else if (loginAuth == 'User')
-                            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserMainPage()));
+                            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserCameraPage()));
                         },
                         color: primaryColor,
                         padding: EdgeInsets.all(13),

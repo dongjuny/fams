@@ -1,3 +1,4 @@
+import 'package:fams/src/screens/user/UserCameraPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../shared/styles.dart';
@@ -29,7 +30,7 @@ class _SignInPageState extends State<SignInPages> {
         actions: <Widget>[
           FlatButton(
             onPressed: () {
-              Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft,  child: UserMainPage()));
+              Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft,  child: UserCameraPage()));
 
             },
             child: Text('Sign Up', style: contrastText),
