@@ -35,7 +35,7 @@ packages:
       name: camera
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.7+3"
+    version: "0.5.7+4"
   charcode:
     dependency: transitive
     description:
@@ -364,6 +364,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.5"
+  stack:
+    dependency: "direct main"
+    description:
+      name: stack
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   stack_trace:
     dependency: transitive
     description:

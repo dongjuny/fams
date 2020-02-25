@@ -6,9 +6,19 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
+_AdminAddState pageState;
+
 class AdminAddPage extends StatefulWidget {
   @override
-  _AdminAddState createState() => new _AdminAddState();
+  _AdminAddState createState() {
+    pageState = _AdminAddState(a_organization);
+    return pageState;
+  }
+
+  String a_organization;
+
+  AdminAddPage(this.a_organization);
+
 }
 
 class User {
@@ -21,6 +31,10 @@ class User {
 
 class _AdminAddState extends State<AdminAddPage> {
   FirebaseProvider fp;
+
+
+  String a_organization;
+  _AdminAddState(this.a_organization);
 
   var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
 
@@ -42,6 +56,7 @@ class _AdminAddState extends State<AdminAddPage> {
   void initState() {
     super.initState();
     scrollController = new ScrollController();
+    print(a_organization);
   }
 
   final Stream<int> stream =
@@ -53,11 +68,9 @@ class _AdminAddState extends State<AdminAddPage> {
   Widget build(BuildContext context) {
 
     fp = Provider.of<FirebaseProvider>(context);
-    Firestore.instance.collection('Admin').document(fp.getUser().uid).get().then((docc) {
-      org = "${docc['organization']}";
-    });
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: currentColor,
       appBar: new AppBar(
         title: new Text(
@@ -186,7 +199,7 @@ class _AdminAddState extends State<AdminAddPage> {
                             height: 160.0,
                             child: StreamBuilder<QuerySnapshot>(
                               stream: Firestore.instance
-                                  .collection('User')
+                                  .collection('User').where('organization', isEqualTo: a_organization)
                                   .snapshots(),
                               builder: (BuildContext context,
                                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -446,7 +459,6 @@ class _AdminAddState extends State<AdminAddPage> {
                   'adminUid' : fp.getUser().uid
                 });
 
-
                 Firestore.instance.collection('Admin').document(fp.getUser().uid).updateData({
                   'group' : FieldValue.arrayUnion([nameController.text])
                 });
@@ -457,8 +469,19 @@ class _AdminAddState extends State<AdminAddPage> {
                     'uid': selectedUsers[i].uid
                   });
                 }
+
+                for (int i=0; i<selectedUsers.length; i++) {
+                  Firestore.instance.collection('User').where('name', isEqualTo: selectedUsers[i].name).getDocuments().then((QuerySnapshot snap) {
+                    snap.documents.forEach((doc) =>
+                    Firestore.instance.collection('User').document(doc.documentID).updateData( {
+                      'group' : FieldValue.arrayUnion([nameController.text])
+                    })
+                    );
+                  });
+                }
+
+
                 Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: AdminMainPage()));
-//                Navigator.pop(context, nameController.text);
               },
             ),
           ],

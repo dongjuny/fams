@@ -1,148 +1,168 @@
-
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fams/src/screens/Authentication/firebase_provider.dart';
-import 'package:fams/src/screens/admin/AdminDetailPage.dart';
+import 'package:fams/src/screens/admin/AdminAddPage.dart';
+import 'package:fams/src/screens/user/UserCameraPage.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class UserMainPage extends StatefulWidget {
 
   @override
-  _UserMainPageState createState() => new _UserMainPageState();
+  _UserMainPage createState() => new _UserMainPage();
 }
 
 class Cards {
   String cardTitle;
+  String startTime;
+  String endTime;
+  String id;
+  String organization;
+
+  List<String> user_list;
+
   int attendNum;
   int absentNum;
   int total;
 
-  Cards(this.cardTitle, this.attendNum, this.absentNum) {
-    this.total = attendNum + absentNum;
-  }
+  Cards(this.cardTitle, this.startTime, this.endTime, this.id, this.organization);
 }
 
-class _UserMainPageState extends State<UserMainPage> {
+class _UserMainPage extends State<UserMainPage> {
 
-
-  var appColors = [
-    Color.fromRGBO(99, 138, 223, 1.0),
-    Color.fromRGBO(231, 129, 109, 1.0),
-    Color.fromRGBO(111, 194, 173, 1.0),
-    Color.fromRGBO(99, 138, 223, 1.0),
-    Color.fromRGBO(231, 129, 109, 1.0),
-    Color.fromRGBO(111, 194, 173, 1.0)
-  ];
+  var appColors = Color.fromRGBO(99, 138, 223, 1.0);
   var cardIndex = 0;
-
-  List<Cards> cardsList = [
-    Cards("Group A", 9, 10),
-    Cards("Group B", 100, 1),
-    Cards("Group C", 50, 3),
-    Cards("Group D", 9, 10),
-    Cards("Group E", 100, 1),
-    Cards("Group F", 50, 3)
-  ];
-
-  String u_name = '';
-  String u_organization = '';
 
 
   FirebaseProvider fp;
   final Stream<int> stream = Stream.periodic(Duration(seconds: 1), (int x) => x);
+
+  String u_name = '';
+  String u_organization = '';
+  String aa;
+
+  List<String> group_list = new List();
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+
+    });
+  }
+
+
+  List<Cards> cardsList = new List();
   @override
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
 
-    return new Scaffold(
-        backgroundColor: appColors[cardIndex],
-        appBar: new AppBar(
-          title: new Text('User', style: TextStyle(fontSize: 16.0),),
-          backgroundColor: appColors[cardIndex],
-          centerTitle: true,
-          elevation: 10.0,
-        ),
-        body: new Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              StreamBuilder<int> (
-                stream: stream, //
-                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                  Firestore.instance.collection('User').document(fp.getUser().uid).get().then((doc) {
-                    u_name = "${doc['name']}";
-                    u_organization = "${doc['organization']}";
-                  });
-                  return Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                          0.0, 16.0, 0.0, 12.0),
-                      child: Text("Hello, $u_name", style: TextStyle(
-                          fontSize: 20.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400),),
-                    ); // 1초에 한번씩 업데이트 된다.
-                },
-              ),
-              Row(),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 40.0, vertical: 0.0),
-                child: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text("You have ${cardsList.length} groups.",
-                        style: TextStyle(fontSize: 15.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400),),
-                      Text("TODAY : JUL 21, 2018", style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w400),),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 0.0, vertical: 30.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(),
-                      Container(
-                        height: 400.0,
-                        child: ListModule(cardsList: cardsList),
-                      ),
-                    ],
-                  )
-              ),
+    return Scaffold(
+      backgroundColor: appColors,
+      appBar: new AppBar(
+        title: new Text("User", style: TextStyle(fontSize: 16.0),),
+        backgroundColor: appColors,
+        centerTitle: true,
+        elevation: 10.0,
+      ),
+      body: new Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            StreamBuilder<int> (
+              stream: stream, //
+              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                Firestore.instance.collection('User').document(fp.getUser().uid).get().then((doc) {
+                  u_name = "${doc['name']}";
+                  u_organization = "${doc['organization']}";
+                  aa = "${doc['group']}";
+                });
 
-            ],
-          ),
+                aa = aa.replaceAll('[', '');
+                aa = aa.replaceAll(']', '');
+                aa = aa.replaceAll(',', '');
+                group_list = aa.split(' ');
+
+                for (int i=0; i<group_list.length; i++) {
+                  Firestore.instance.collection('Group').document(group_list[i]).get().then((doc) {
+                    if(group_list.length != cardsList.length) {
+                      cardsList.add(new Cards(
+                          "${doc['name']}",
+                          "${doc['startTime']}",
+                          "${doc['endTime']}",
+                          "${doc['id']}",
+                          "${doc['organization']}"));
+                    }
+                  });
+
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 40.0, vertical: 0.0),
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 12.0),
+                          child: Text("Hello, $u_name.", style: TextStyle(
+                              fontSize: 30.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400),),
+                        ),
+                        Text("You have ${cardsList.length} groups.",
+                          style: TextStyle(fontSize: 15.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400),),
+                        Text("TODAY : JUL 21, 2018", style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w400),),
+                        Row(),
+                        Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 0.0, vertical: 30.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(),
+                                Container(
+                                  height: 400.0,
+                                  child: cardsList.length == 0 ? EmptyCardModule() : ListModule(cardsList: cardsList, userName: u_name),
+                                ),
+                              ],
+                            )
+                        ),
+                      ],
+                    ),
+                  ),
+                ); // 1초에 한번씩 업데이트 된다.
+              },
+            )
+          ],
         ),
+      ),
 //      drawer: Drawer(),
     );
   }
 }
 
 class ListModule extends StatefulWidget {
+  final List<Cards> cardsList;
+  final String userName;
 
   const ListModule({
     Key key,
     @required this.cardsList,
+    this.userName
   }) : super(key: key);
 
   _ListModuleState createState() => _ListModuleState();
-  final List<Cards> cardsList;
 
-//  ListModule(this.cardsList);
 }
 
 class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
-  FirebaseProvider fp;
 
   List<Cards> cardsList;
+  String userName;
 
   var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
   var cardIndex = 0;
@@ -158,26 +178,27 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
     super.initState();
     scrollController = new ScrollController();
     cardsList = widget.cardsList;
+    userName = widget.userName;
   }
 
   Widget build(BuildContext context){
 
-    fp = Provider.of<FirebaseProvider>(context);
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
       itemCount: cardsList.length,
       controller: scrollController,
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, position) {
+        String st = cardsList[position].startTime;
+        String et = cardsList[position].endTime;
         return GestureDetector(
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (_) => AdminDetailPage(null)));
           },
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(0.0),
             child: Card(
               child: Container(
-                width: 300.0,
+                width: 280.0,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -185,9 +206,16 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text("${cardsList[position].cardTitle}", style: TextStyle(fontSize: 28.0),),
+                          Text("${cardsList[position].cardTitle}", style: TextStyle(color: Colors.black54, fontSize: 28.0),),
+                          IconButton(
+                            icon: new Icon(Icons.camera_alt),
+                            color: Colors.black54,
+                            onPressed: () => {
+                              Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserCameraPage(userName, cardsList[position].cardTitle)))
+                            },
+                          )
                         ],
                       ),
                     ),
@@ -198,19 +226,11 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                            child: Text("Attend: ${cardsList[position].attendNum}", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
+                            child: Text("StartTime: $st", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                            child: Text("Attend: ${cardsList[position].absentNum}", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                            child: Text("${(cardsList[position].attendNum / cardsList[position].total * 100).toStringAsFixed(1)}%", style: TextStyle(fontSize: 28.0),),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: LinearProgressIndicator(value: cardsList[position].attendNum / cardsList[position].total,),
+                            child: Text("EndTime: $et", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
                           ),
                         ],
                       ),
@@ -236,7 +256,7 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
               }
             }
             setState(() {
-              scrollController.animateTo((cardIndex)*325.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+              scrollController.animateTo((cardIndex)*290.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
             });
             animationController.forward( );
           },
@@ -245,89 +265,40 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
     );
   }
 }
-/*
-import 'package:flutter/material.dart';
-import '../../shared/styles.dart';
-import '../../shared/colors.dart';
-import '../../shared/fryo_icons.dart';
-import 'widget/AttendanceStatus.dart';
 
-class Dashboard extends StatefulWidget {
-  final String pageTitle;
-
-  Dashboard({Key key, this.pageTitle}) : super(key: key);
-
-  @override
-  _DashboardState createState() => _DashboardState();
-}
-
-class _DashboardState extends State<Dashboard> {
-  int _selectedIndex = 0;
-
+class EmptyCardModule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _tabs = [
-      AttendanceStatus(),
-      Text('설정'),
-    ];
-
-    return Scaffold(
-        backgroundColor: bgColor,
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () {},
-            iconSize: 21,
-            icon: Icon(Fryo.funnel),
-          ),
-          backgroundColor: primaryColor,
-          title:
-          Text('Fams', style: logoWhiteStyle, textAlign: TextAlign.center),
-          actions: <Widget>[
-            IconButton(
-              padding: EdgeInsets.all(0),
-              onPressed: () {},
-              iconSize: 21,
-              icon: Icon(Fryo.magnifier),
+    // TODO: implement build
+    return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Center(
+          child: Card(
+            child: Container(
+              width: 300.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("You don't have any group.", style: TextStyle(fontSize: 20.0, color: Colors.white),),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            IconButton(
-              padding: EdgeInsets.all(0),
-              onPressed: () {},
-              iconSize: 21,
-              icon: Icon(Fryo.alarm),
-            )
-          ],
-        ),
-        body: _tabs[_selectedIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-                icon: Icon(Fryo.shop),
-                title: Text(
-                  '출석현황',
-                  style: tabLinkStyle,
-                )),
-            BottomNavigationBarItem(
-                icon: Icon(Fryo.cog_1),
-                title: Text(
-                  '설정',
-                  style: tabLinkStyle,
-                ))
-          ],
-          currentIndex: _selectedIndex,
-          type: BottomNavigationBarType.fixed,
-          fixedColor: Colors.green[600],
-          onTap: _onItemTapped,
-        ));
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)
+            ),
+            color: Colors.transparent,
+          ),
+        )
+    );
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 }
-
-
- */

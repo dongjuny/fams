@@ -132,11 +132,7 @@ class _AdminMainState extends State<AdminMainPage> {
               children: <Widget>[
                 FloatingActionButton(
                   onPressed: () {
-//                    Navigator.push(context,
-//                      MaterialPageRoute(builder: (context) => AdminAddPage()),).then((value) {
-//                        setState(() {});
-//                    });
-                    Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: AdminAddPage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => AdminAddPage(a_organization)));
                   },
                   child: Icon(Icons.add, color: Colors.black, size: 35.0,),
                   backgroundColor: Colors.white,
