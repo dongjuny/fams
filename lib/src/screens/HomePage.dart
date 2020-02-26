@@ -1,15 +1,11 @@
-import 'dart:math';
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fams/src/screens/admin/AdminAddPage.dart';
 import 'package:fams/src/screens/admin/AdminMainPage.dart';
 import 'package:fams/src/screens/user/DashboardPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../shared/styles.dart';
-import '../shared/colors.dart';
-import '../shared/buttons.dart';
 import "package:page_transition/page_transition.dart";
 
 import 'Authentication/firebase_provider.dart';

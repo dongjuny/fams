@@ -73,6 +73,7 @@ class _AdminAddState extends State<AdminAddPage> {
       resizeToAvoidBottomInset: false,
       backgroundColor: currentColor,
       appBar: new AppBar(
+//        automaticallyImplyLeading: false,
         title: new Text(
           "ADMIN",
           style: TextStyle(fontSize: 16.0),
@@ -100,7 +101,7 @@ class _AdminAddState extends State<AdminAddPage> {
                           Text(
                             "Add Group Setting",
                             style: TextStyle(
-                                fontSize: 15.0, color: Colors.black54),
+                                fontSize: 15.0, color: Colors.black54, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -117,7 +118,7 @@ class _AdminAddState extends State<AdminAddPage> {
                             child: Text("Name",
                                 style: TextStyle(
                                     fontSize: 15.0,
-                                    fontWeight: FontWeight.w400)),
+                                    fontWeight: FontWeight.bold)),
                           ),
                           Expanded(
                               child: Padding(
@@ -145,7 +146,7 @@ class _AdminAddState extends State<AdminAddPage> {
                             child: Text("ID",
                                 style: TextStyle(
                                     fontSize: 15.0,
-                                    fontWeight: FontWeight.w400)),
+                                    fontWeight: FontWeight.bold)),
                           ),
                           Expanded(
                               child: Padding(
@@ -187,7 +188,7 @@ class _AdminAddState extends State<AdminAddPage> {
                                 Text(
                                   "Add Users",
                                   style: TextStyle(
-                                      fontSize: 15.0, color: Colors.black54),
+                                      fontSize: 15.0, color: Colors.black54, fontWeight: FontWeight.bold),
                                 ),
 //                                Icon(Icons.add, color: Colors.grey,),
                               ],
@@ -225,7 +226,7 @@ class _AdminAddState extends State<AdminAddPage> {
                                                 ),
                                                 title: Row(
                                                   children: <Widget>[
-                                                    Text(data.name),
+                                                    Text(data.name, style: TextStyle(fontWeight: FontWeight.bold)),
                                                   ],
                                                 ),
                                                 onTap: () {
@@ -270,7 +271,7 @@ class _AdminAddState extends State<AdminAddPage> {
                                 Text(
                                   "Time Setting",
                                   style: TextStyle(
-                                      fontSize: 15.0, color: Colors.black54),
+                                      fontSize: 15.0, color: Colors.black54, fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
@@ -289,7 +290,7 @@ class _AdminAddState extends State<AdminAddPage> {
                                             horizontal: 10.0),
                                         child: Text(
                                           "Start",
-                                          style: TextStyle(fontSize: 15.0),
+                                          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                       RaisedButton(
@@ -338,7 +339,7 @@ class _AdminAddState extends State<AdminAddPage> {
                                                               fontWeight:
                                                               FontWeight
                                                                   .bold,
-                                                              fontSize: 18.0),
+                                                              fontSize: 18.0,),
                                                         ),
                                                       ],
                                                     ),
@@ -366,7 +367,7 @@ class _AdminAddState extends State<AdminAddPage> {
                                             horizontal: 10.0),
                                         child: Text(
                                           "end  ",
-                                          style: TextStyle(fontSize: 15.0),
+                                          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                       RaisedButton(
@@ -447,13 +448,14 @@ class _AdminAddState extends State<AdminAddPage> {
                 )),
             RaisedButton(
               child: Text('Add'),
+
               color: Colors.white,
               onPressed: () {
-                print(org);
+                print(a_organization);
                 Firestore.instance.collection('Group').document(nameController.text).setData({
                   'name' : nameController.text,
                   'endTime': endTime,
-                  'organization': org,
+                  'organization': a_organization,
                   'startTime' : startTime,
                   'id' : idController.text,
                   'adminUid' : fp.getUser().uid
@@ -463,6 +465,7 @@ class _AdminAddState extends State<AdminAddPage> {
                   'group' : FieldValue.arrayUnion([nameController.text])
                 });
 
+
                 for (int i=0; i<selectedUsers.length; i++) {
                   Firestore.instance.collection('Group').document(nameController.text).collection('User').document(selectedUsers[i].uid).setData({
                     'name': selectedUsers[i].name,
@@ -470,13 +473,17 @@ class _AdminAddState extends State<AdminAddPage> {
                   });
                 }
 
+
                 for (int i=0; i<selectedUsers.length; i++) {
                   Firestore.instance.collection('User').where('name', isEqualTo: selectedUsers[i].name).getDocuments().then((QuerySnapshot snap) {
-                    snap.documents.forEach((doc) =>
-                    Firestore.instance.collection('User').document(doc.documentID).updateData( {
+                    snap.documents.forEach((doc) => Firestore.instance.collection('User').document(doc.documentID).updateData( {
                       'group' : FieldValue.arrayUnion([nameController.text])
                     })
                     );
+                  });
+
+                  Firestore.instance.collection('Group').document(nameController.text).updateData({
+                    'user_list' : FieldValue.arrayUnion([selectedUsers[i].name])
                   });
                 }
 

@@ -1,5 +1,3 @@
-import 'package:fams/src/screens/SignUp_Choice_Page.dart';
-import 'package:fams/src/screens/SignUp_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../HomePage.dart';

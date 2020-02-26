@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as Path;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class UserCameraPage extends StatefulWidget {
@@ -26,6 +27,7 @@ class UserCameraPage extends StatefulWidget {
 class UserCameraPageState extends State {
   String userName;
   String groupName;
+  String organization;
 
   UserCameraPageState(this.userName, this.groupName);
 
@@ -72,8 +74,14 @@ class UserCameraPageState extends State {
   @override
   Widget build(BuildContext context) {
     fp = Provider.of(context);
+    Firestore.instance.collection('User').document(fp.getUser().uid).get().then((doc) {
+      organization = doc.data['organization'];
+      print(organization);
+    });
+
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Enroll Your Face', style: TextStyle(fontSize: 16.0)),
         backgroundColor: currentColor,
         centerTitle: true,
@@ -135,18 +143,23 @@ class UserCameraPageState extends State {
               });
               path = join(
                 (await getTemporaryDirectory()).path,
-                '$userName$i.png',
+                '${groupName}_${userName}$i.png',
               );
 
+              print(path);
               await _controller.takePicture(path);
               File _image = File(path);
               storageReference = FirebaseStorage.instance.ref().child(
-                  '$groupName/$userName/ ${Path.basename(_image.path)}');
+                  '$organization/$groupName/$userName/${Path.basename(_image.path)}');
               storageReference.putFile(_image);
             }
 
+            cnt = 0;
+            check = false;
+
             Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserMainPage()));
           } catch (e) {
+            print('---');
             print(e);
           }
         },

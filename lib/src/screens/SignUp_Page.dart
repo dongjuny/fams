@@ -1,16 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fams/src/screens/SignUp_Choice_Page.dart';
 import 'package:fams/src/screens/user/DashboardPage.dart';
-import 'package:fams/src/screens/user/UserCameraPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'SignInPage.dart';
 import 'Authentication/firebase_provider.dart';
 import 'package:provider/provider.dart';
-import '../shared/styles.dart';
-import '../shared/colors.dart';
-import '../shared/inputFields.dart';
 import 'admin/AdminMainPage.dart';
 
 SignUpPageState pageState;
@@ -40,6 +34,7 @@ class SignUpPageState extends State<SignUpPage> {
 
   final nameController = TextEditingController();
   final organizationController = TextEditingController();
+  final english_nameController = TextEditingController();
 
   double bodysize;
 
@@ -145,4 +140,3 @@ class SignUpPageState extends State<SignUpPage> {
     );
   }
 }
-

@@ -78,14 +78,13 @@ class _AdminDetailState extends State<AdminDetailPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 40.0, vertical: 0.0),
-                  child: Text("Setting for $name", style: TextStyle(
+                  child: Text("Info about $name", style: TextStyle(
                       fontSize: 15.0,
                       color: Colors.white,
-                      fontWeight: FontWeight.w400)),
+                      fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
-
             Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 30.0, vertical: 5.0),
@@ -103,7 +102,7 @@ class _AdminDetailState extends State<AdminDetailPage> {
                               children: <Widget>[
                                 Icon(Icons.add, color: Colors.transparent,),
                                 Text("Users", style: TextStyle(
-                                    fontSize: 15.0, color: Colors.black54),),
+                                    fontSize: 15.0, color: Colors.black54, fontWeight: FontWeight.bold),),
                                 Icon(Icons.add, color: Colors.black54,),
                               ],
                             ),
@@ -111,14 +110,10 @@ class _AdminDetailState extends State<AdminDetailPage> {
                           Divider(),
                           Container(
                             child: StreamBuilder<QuerySnapshot>(
-                              stream: Firestore.instance
-                                  .collection('Group').document(name).collection('User')
+                              stream: Firestore.instance.collection('Group').document(name).collection('User')
                                   .snapshots(),
-
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                                if (0 == usersList.length)
-                                  snapshot.data.documents.forEach((doc) => usersList.add(new User('${doc['name']}', true)));
+                              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                if (0 == usersList.length) snapshot.data.documents.forEach((doc) => usersList.add(new User('${doc['name']}', true)));
                                 if (snapshot.hasError)
                                   return Text("Error: ${snapshot.error}");
                                 switch (snapshot.connectionState) {
@@ -137,20 +132,21 @@ class _AdminDetailState extends State<AdminDetailPage> {
                                                   Icons.arrow_forward_ios,),
                                                 title: Row(
                                                   children: <Widget>[
-                                                    Text(data.name),
-                                                    Padding(
-                                                        padding: const EdgeInsets
-                                                            .symmetric(
-                                                            horizontal: 10.0),
-                                                        child: Text(
-                                                          data.isAttend
-                                                              ? "Attend"
-                                                              : "Absent",
-                                                          style: TextStyle(
-                                                              fontSize: 12.0,
-                                                              color: Colors
-                                                                  .grey),)
-                                                    )
+                                                    Text(data.name, style: TextStyle(fontSize: 15.0,
+                                                        fontWeight: FontWeight.bold)),
+//                                                    Padding(
+//                                                        padding: const EdgeInsets
+//                                                            .symmetric(
+//                                                            horizontal: 10.0),
+//                                                        child: Text(
+//                                                          data.isAttend
+//                                                              ? "Attend"
+//                                                              : "Absent",
+//                                                          style: TextStyle(
+//                                                              fontSize: 12.0,
+//                                                              color: Colors
+//                                                                  .grey),)
+//                                                    )
                                                   ],
                                                 ),
                                               ),
@@ -187,8 +183,8 @@ class _AdminDetailState extends State<AdminDetailPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text("Time Setting : $startTime", style: TextStyle(
-                                    fontSize: 15.0, color: Colors.black54),),
+                                Text("Time", style: TextStyle(
+                                    fontSize: 15.0, color: Colors.black54, fontWeight: FontWeight.bold),),
                               ],
                             ),
                           ),
@@ -202,20 +198,18 @@ class _AdminDetailState extends State<AdminDetailPage> {
                                   Row(
                                     children: <Widget>[
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0),
+                                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
                                         child: Text("StartTime : ${groupName.startTime}",
-                                          style: TextStyle(fontSize: 15.0),),
+                                          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),),
                                       ),
                                     ],
                                   ),
                                   Row(
                                     children: <Widget>[
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0),
+                                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
                                         child: Text("endTime : $endTime  ",
-                                          style: TextStyle(fontSize: 15.0),),
+                                          style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),),
                                       ),
                                     ],
                                   ),

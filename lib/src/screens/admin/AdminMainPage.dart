@@ -39,7 +39,10 @@ class _AdminMainState extends State<AdminMainPage> {
 
   String a_name = '';
   String a_organization = '';
-
+  var n = new DateTime.now();
+  int year = 0;
+  int day = 0;
+  int month = 0;
   List<String> group_list = new List();
   @override
   void initState() {
@@ -56,6 +59,7 @@ class _AdminMainState extends State<AdminMainPage> {
     fp = Provider.of<FirebaseProvider>(context);
     print(cardsList.length);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: appColors,
       appBar: new AppBar(
         title: new Text("ADMIN", style: TextStyle(fontSize: 16.0),),
@@ -70,6 +74,10 @@ class _AdminMainState extends State<AdminMainPage> {
             StreamBuilder<int> (
               stream: stream, //
               builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                n = new DateTime.now();
+                day = n.day;
+                month = n.month;
+                year = n.year;
                 Firestore.instance.collection('Admin').document(fp.getUser().uid).get().then((doc) {
                   a_name = "${doc['name']}";
                   a_organization = "${doc['organization']}";
@@ -104,7 +112,7 @@ class _AdminMainState extends State<AdminMainPage> {
                             style: TextStyle(fontSize: 15.0,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w400),),
-                          Text("TODAY : JUL 21, 2018", style: TextStyle(
+                          Text("${year}년 ${month}월 ${day}일", style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.w400),),
                           Row(),
                           Padding(
@@ -132,7 +140,8 @@ class _AdminMainState extends State<AdminMainPage> {
               children: <Widget>[
                 FloatingActionButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => AdminAddPage(a_organization)));
+                    Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: AdminAddPage(a_organization)));
+//                    Navigator.push(context, MaterialPageRoute(builder: (_) => AdminAddPage(a_organization)));
                   },
                   child: Icon(Icons.add, color: Colors.black, size: 35.0,),
                   backgroundColor: Colors.white,
@@ -197,7 +206,7 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(0.0),
             child: Card(
               child: Container(
-                width: 280.0,
+                width: 300.0,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -248,7 +257,7 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
               }
             }
             setState(() {
-              scrollController.animateTo((cardIndex)*290.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+              scrollController.animateTo((cardIndex)*310.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
             });
             animationController.forward( );
           },

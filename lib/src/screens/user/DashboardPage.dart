@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fams/src/screens/Authentication/firebase_provider.dart';
-import 'package:fams/src/screens/admin/AdminAddPage.dart';
 import 'package:fams/src/screens/user/UserCameraPage.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -40,7 +39,12 @@ class _UserMainPage extends State<UserMainPage> {
   String u_name = '';
   String u_organization = '';
   String aa;
+  var n = new DateTime.now();
+  int year = 0;
+  int day = 0;
+  int month = 0;
 
+  int at_cnt = 0;
   List<String> group_list = new List();
   @override
   void initState() {
@@ -50,15 +54,14 @@ class _UserMainPage extends State<UserMainPage> {
     });
   }
 
-
   List<Cards> cardsList = new List();
   @override
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
-
     return Scaffold(
       backgroundColor: appColors,
       appBar: new AppBar(
+        automaticallyImplyLeading: false,
         title: new Text("User", style: TextStyle(fontSize: 16.0),),
         backgroundColor: appColors,
         centerTitle: true,
@@ -71,30 +74,27 @@ class _UserMainPage extends State<UserMainPage> {
             StreamBuilder<int> (
               stream: stream, //
               builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                n = new DateTime.now();
+                day = n.day;
+                month = n.month;
+                year = n.year;
                 Firestore.instance.collection('User').document(fp.getUser().uid).get().then((doc) {
                   u_name = "${doc['name']}";
                   u_organization = "${doc['organization']}";
                   aa = "${doc['group']}";
                 });
 
-                aa = aa.replaceAll('[', '');
-                aa = aa.replaceAll(']', '');
-                aa = aa.replaceAll(',', '');
-                group_list = aa.split(' ');
-
-                for (int i=0; i<group_list.length; i++) {
-                  Firestore.instance.collection('Group').document(group_list[i]).get().then((doc) {
-                    if(group_list.length != cardsList.length) {
-                      cardsList.add(new Cards(
-                          "${doc['name']}",
-                          "${doc['startTime']}",
-                          "${doc['endTime']}",
-                          "${doc['id']}",
-                          "${doc['organization']}"));
-                    }
+                Firestore.instance.collection('Group').where('user_list', arrayContains: u_name).getDocuments().then((QuerySnapshot snap) {
+                  cardsList = new List();
+                  snap.documents.forEach((doc) {
+                    cardsList.add(new Cards(
+                        "${doc['name']}",
+                        "${doc['startTime']}",
+                        "${doc['endTime']}",
+                        "${doc['id']}",
+                        "${doc['organization']}"));
                   });
-
-                }
+                });
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(
@@ -114,7 +114,7 @@ class _UserMainPage extends State<UserMainPage> {
                           style: TextStyle(fontSize: 15.0,
                               color: Colors.white,
                               fontWeight: FontWeight.w400),),
-                        Text("TODAY : JUL 21, 2018", style: TextStyle(
+                        Text("${year}년 ${month}월 ${day}일", style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.w400),),
                         Row(),
                         Padding(
@@ -125,8 +125,8 @@ class _UserMainPage extends State<UserMainPage> {
                               children: <Widget>[
                                 Row(),
                                 Container(
-                                  height: 400.0,
-                                  child: cardsList.length == 0 ? EmptyCardModule() : ListModule(cardsList: cardsList, userName: u_name),
+                                  height: 450.0,
+                                  child: cardsList.length == 0 ? EmptyCardModule() : ListModule(cardsList: cardsList, userName: u_name, uid: fp.getUser().uid),
                                 ),
                               ],
                             )
@@ -148,11 +148,12 @@ class _UserMainPage extends State<UserMainPage> {
 class ListModule extends StatefulWidget {
   final List<Cards> cardsList;
   final String userName;
+  final String uid;
 
   const ListModule({
     Key key,
     @required this.cardsList,
-    this.userName
+    this.userName, this.uid
   }) : super(key: key);
 
   _ListModuleState createState() => _ListModuleState();
@@ -163,15 +164,22 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
 
   List<Cards> cardsList;
   String userName;
-
+  String uid;
+  var n = new DateTime.now();
+  String year = '';
+  int day = 0;
+  int month = 0;
   var currentColor = Color.fromRGBO(99, 138, 223, 1.0);
   var cardIndex = 0;
   var itemCount;
+
+  String check = '';
 
   ScrollController scrollController;
   AnimationController animationController;
   ColorTween colorTween;
   CurvedAnimation curvedAnimation;
+  final Stream<int> stream = Stream.periodic(Duration(seconds: 1), (int x) => x);
 
   @override
   void initState() {
@@ -179,9 +187,16 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
     scrollController = new ScrollController();
     cardsList = widget.cardsList;
     userName = widget.userName;
+    uid = widget.uid;
   }
 
+  FirebaseProvider fp;
+
+  int cnt=0;
   Widget build(BuildContext context){
+    fp = Provider.of<FirebaseProvider>(context);
+    print(fp.getUser().uid);
+
 
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
@@ -198,43 +213,101 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(0.0),
             child: Card(
               child: Container(
-                width: 280.0,
+                width: 300.0,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text("${cardsList[position].cardTitle}", style: TextStyle(color: Colors.black54, fontSize: 28.0),),
-                          IconButton(
-                            icon: new Icon(Icons.camera_alt),
-                            color: Colors.black54,
-                            onPressed: () => {
-                              Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserCameraPage(userName, cardsList[position].cardTitle)))
-                            },
-                          )
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text("${cardsList[position].cardTitle}", style: TextStyle(color: Colors.black54, fontSize: 28.0, fontWeight: FontWeight.bold),),
+                              IconButton(
+                                icon: new Icon(Icons.camera_alt),
+                                color: Colors.black54,
+                                onPressed: () => {
+                                  Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserCameraPage(userName, cardsList[position].cardTitle)))
+                                },
+                              )
+                            ],
+                          ),
+                          Divider(thickness: 2,),
+//                          Text("StartTime: $st", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                  child: Text("Start Time: $st", style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                  child: Text("End Time: $et", style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
-                      ),
+                      )
                     ),
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                            child: Text("StartTime: $st", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                            child: Text("EndTime: $et", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
+                          Divider(thickness: 2,),
+                          StreamBuilder<int> (
+                            stream: stream, //
+                            builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                              n = new DateTime.now();
+                              day = n.day;
+                              month = n.month;
+                              year = n.year.toString()+'0'+n.month.toString()+n.day.toString();
+
+                              Firestore.instance.collection('Logs').document(fp.getUser().uid).collection(cardsList[position].cardTitle).getDocuments().then((QuerySnapshot snap) {
+                                cnt = 0;
+                                snap.documents.forEach((doc) => cnt = cnt + 1
+                                );
+                              });
+
+                              Firestore.instance.collection('Logs').document(fp.getUser().uid).collection(cardsList[position].cardTitle).document(year)
+                                  .get().then((doc) {
+                                setState(() {
+                                  check = doc.data.isEmpty ? 'absent' : 'present';
+                                });
+                              });
+
+                              return Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                          child: Text("You are ${check} today.", style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                          child: Text("You attended ${cnt} time(s) this month.", style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                              );
+                            },
                           ),
                         ],
-                      ),
+                      )
                     ),
+
                   ],
                 ),
               ),
@@ -256,7 +329,7 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
               }
             }
             setState(() {
-              scrollController.animateTo((cardIndex)*290.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
+              scrollController.animateTo((cardIndex)*310.0, duration: Duration(milliseconds: 500), curve: Curves.fastOutSlowIn);
             });
             animationController.forward( );
           },
