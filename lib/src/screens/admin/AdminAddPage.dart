@@ -485,6 +485,7 @@ class _AdminAddState extends State<AdminAddPage> {
                   Firestore.instance.collection('Group').document(nameController.text).updateData({
                     'user_list' : FieldValue.arrayUnion([selectedUsers[i].name])
                   });
+
                 }
 
 

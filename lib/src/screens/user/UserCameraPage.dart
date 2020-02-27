@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:fams/src/screens/Authentication/firebase_provider.dart';
-import 'package:fams/src/screens/user/DashboardPage.dart';
+import 'package:fams/src/screens/user/UserMainPage.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path/path.dart' show join;

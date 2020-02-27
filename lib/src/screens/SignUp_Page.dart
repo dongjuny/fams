@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fams/src/screens/user/DashboardPage.dart';
+import 'package:fams/src/screens/user/UserMainPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -47,7 +47,7 @@ class SignUpPageState extends State<SignUpPage> {
           elevation: 10.0,
           backgroundColor: currentColor,
           title: Text(
-            'FAMS 가입하기',
+            'FAMS Sign Up',
             style: TextStyle(fontSize: 16.0),
           ),
           centerTitle: true,

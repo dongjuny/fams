@@ -173,7 +173,7 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
   var cardIndex = 0;
   var itemCount;
 
-  String check = '';
+  String check = 'absent';
 
   ScrollController scrollController;
   AnimationController animationController;
@@ -219,93 +219,90 @@ class _ListModuleState extends State<ListModule> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text("${cardsList[position].cardTitle}", style: TextStyle(color: Colors.black54, fontSize: 28.0, fontWeight: FontWeight.bold),),
-                              IconButton(
-                                icon: new Icon(Icons.camera_alt),
-                                color: Colors.black54,
-                                onPressed: () => {
-                                  Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserCameraPage(userName, cardsList[position].cardTitle)))
-                                },
-                              )
-                            ],
-                          ),
-                          Divider(thickness: 2,),
-//                          Text("StartTime: $st", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                  child: Text("Start Time: $st", style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                  child: Text("End Time: $et", style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),),
-                                ),
+                                Text("${cardsList[position].cardTitle}", style: TextStyle(color: Colors.black54, fontSize: 28.0, fontWeight: FontWeight.bold),),
+                                IconButton(
+                                  icon: new Icon(Icons.camera_alt),
+                                  color: Colors.black54,
+                                  onPressed: () => {
+                                    Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeft, child: UserCameraPage(userName, cardsList[position].cardTitle)))
+                                  },
+                                )
                               ],
                             ),
-                          ),
-                        ],
-                      )
+                            Divider(thickness: 2,),
+//                          Text("StartTime: $st", style: TextStyle(color: Colors.black54, fontSize: 15.0),),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                    child: Text("Start Time: $st", style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                    child: Text("End Time: $et", style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Divider(thickness: 2,),
-                          StreamBuilder<int> (
-                            stream: stream, //
-                            builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                              n = new DateTime.now();
-                              day = n.day;
-                              month = n.month;
-                              year = n.year.toString()+'0'+n.month.toString()+n.day.toString();
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Divider(thickness: 2,),
+                            StreamBuilder<int> (
+                              stream: stream, //
+                              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                                n = new DateTime.now();
+                                day = n.day;
+                                month = n.month;
+                                year = n.year.toString()+'0'+n.month.toString()+n.day.toString();
 
-                              Firestore.instance.collection('Logs').document(fp.getUser().uid).collection(cardsList[position].cardTitle).getDocuments().then((QuerySnapshot snap) {
-                                cnt = 0;
-                                snap.documents.forEach((doc) => cnt = cnt + 1
-                                );
-                              });
+                                Firestore.instance.collection('Logs').document(fp.getUser().uid).collection(cardsList[position].cardTitle).getDocuments().then((QuerySnapshot snap) {
+                                  cnt = 0;
+                                  snap.documents.forEach((doc) => cnt = cnt + 1
+                                  );
+                                });
 
-                              Firestore.instance.collection('Logs').document(fp.getUser().uid).collection(cardsList[position].cardTitle).document(year)
-                                  .get().then((doc) {
-                                setState(() {
+                                Firestore.instance.collection('Logs').document(fp.getUser().uid).collection(cardsList[position].cardTitle).document(year).get().then((doc) {
                                   check = doc.data.isEmpty ? 'absent' : 'present';
                                 });
-                              });
 
-                              return Container(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                          child: Text("You are ${check} today.", style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                          child: Text("You attended ${cnt} time(s) this month.", style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                              );
-                            },
-                          ),
-                        ],
-                      )
+                                return Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                            child: Text("You are ${check} today.", style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                            child: Text("You attended ${cnt} time(s) this month.", style: TextStyle(color: Colors.black54, fontSize: 15.0, fontWeight: FontWeight.bold),),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                );
+                              },
+                            ),
+                          ],
+                        )
                     ),
 
                   ],
