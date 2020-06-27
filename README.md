@@ -1,18 +1,40 @@
-# fams
+# Fams App - Face Attendance Management System App
+-----
 
-A new Flutter application.
 
-# pubspec.yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  google_sign_in: ^4.0.11
-  http: ^0.12.0+2
-  page_transition: "^1.1.5"
-  provider: ^3.1.0+1
-  cupertino_icons: ^0.1.2
-  shared_preferences: ^0.5.3+2
-  firebase_auth: ^0.15.4
-  intl: ^0.16.1
-  logger: ^0.8.3
-  cloud_firestore: ^0.13.1
+# 개요
+* 프로젝트 명 : Fams App(Face Attendance Management System App)
+
+* 일정 : 19.2.1. ~ 19.2.27.(1개월)
+
+* 팀 구성 : 2인
+
+* 목적 : 얼굴인식 서비스를 간편하게 사용하기 위해 모바일 어플리케이션을 개발
+           
+* 사용 기술 및 개발환경
+   - O/S : Linux ubuntu 18.04(운영환경)
+   - Baas : Firebase
+   - Framework/flatform : Flutter
+   - Programming Language : Dart
+   - Tool : Android Studio, Github
+   - 버전관리 : Github
+   - API : Google Developer
+   
+# 내용
+* [PPT(Slideshare)]()
+
+* 구현 기능
+   - 로그인(OAuth)
+   - 
+   
+* 팀원별 역할
+   - 한동준 :
+   - 유기쁨
+   
+* 설계의 주안점
+   - 
+   - 
+      
+* 산출물(대표)
+   - ERD
+     ![erd](./src/main/webapp/resources/Image/result/erd.png)
