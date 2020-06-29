@@ -21,11 +21,13 @@
    - API : Google Developer
    
 # 내용
-* [PPT(Slideshare)]()
+* [PPT(Slideshare)](https://www.slideshare.net/DongJunHan2/fams-236356538)
 
 * 구현 기능
    - 로그인(OAuth)
-   - 
+   - ㅇ
+   - 그룹추그
+   - 그룹추가
    
 * 팀원별 역할
    - 한동준 :
