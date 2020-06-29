@@ -24,19 +24,18 @@
 * [PPT(Slideshare)](https://www.slideshare.net/DongJunHan2/fams-236356538)
 
 * 구현 기능
-   - 로그인(OAuth)
-   - ㅇ
-   - 그룹추그
-   - 그룹추가
+   - 유저/관리자 로그인(OAuth)
+   - 그룹추가/삭제/관리 (유저 그룹추가, 수업시간 설정)
+   - 관리자용 출석현황 관리
+   - 유저 그룹 출석 관리
+   - 유저 얼굴 등록
+   - 얼굴인식 모듈과 DB연동
    
 * 팀원별 역할
-   - 한동준 :
-   - 유기쁨
+   - 한동준 : Back-end
+   - 유기쁨 : Front-end
    
 * 설계의 주안점
    - 
    - 
       
-* 산출물(대표)
-   - ERD
-     ![erd](./src/main/webapp/resources/Image/result/erd.png)
