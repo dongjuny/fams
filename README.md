@@ -37,6 +37,7 @@
    - 유기쁨 : Front-end
 
 * 프로젝트 구성도
+
 ![image](https://user-images.githubusercontent.com/33618171/86105363-34e16b00-bafa-11ea-9e5b-8ce58fcbed24.png)
 
 
