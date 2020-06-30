@@ -35,7 +35,10 @@
    - 한동준 : Back-end
    - 유기쁨 : Front-end
    
-* 설계의 주안점
-   - 
-   - 
+* 프로젝트 UI
+<img width="423" alt="1" src="https://user-images.githubusercontent.com/33618171/86098771-8afde080-baf1-11ea-980c-396d05571c5c.png">
+<img width="711" alt="스크린샷 2020-06-29 오후 7 13 51" src="https://user-images.githubusercontent.com/33618171/86098824-9e10b080-baf1-11ea-880d-2f24ed75a216.png">
+<img width="711" alt="스크린샷 2020-06-29 오후 7 13 58" src="https://user-images.githubusercontent.com/33618171/86098859-a9fc7280-baf1-11ea-84fc-fdc623ee30c9.png">
+
+
       
