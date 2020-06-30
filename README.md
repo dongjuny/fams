@@ -52,4 +52,4 @@
 <img width="711" alt="스크린샷 2020-06-29 오후 7 13 58" src="https://user-images.githubusercontent.com/33618171/86098859-a9fc7280-baf1-11ea-84fc-fdc623ee30c9.png">
 
 
-      
+* [H/W Git link](https://github.com/dongjuny/hustar_project)
