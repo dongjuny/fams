@@ -39,8 +39,11 @@
 * 프로젝트 구성도
 ![image](https://user-images.githubusercontent.com/33618171/86105363-34e16b00-bafa-11ea-9e5b-8ce58fcbed24.png)
 
+
 * 앱 구성도
+
 ![image](https://user-images.githubusercontent.com/33618171/86105560-7245f880-bafa-11ea-936f-6703cbcdb215.png)
+
 
 * 프로젝트 UI
 <img width="423" alt="1" src="https://user-images.githubusercontent.com/33618171/86098771-8afde080-baf1-11ea-980c-396d05571c5c.png">
