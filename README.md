@@ -19,7 +19,8 @@
    - Tool : Android Studio, Github
    - 버전관리 : Github
    - API : Google Developer
-   
+
+
 # 내용
 * [PPT(Slideshare)](https://www.slideshare.net/DongJunHan2/fams-236356538)
 
@@ -34,7 +35,13 @@
 * 팀원별 역할
    - 한동준 : Back-end
    - 유기쁨 : Front-end
-   
+
+* 프로젝트 구성도
+![image](https://user-images.githubusercontent.com/33618171/86105363-34e16b00-bafa-11ea-9e5b-8ce58fcbed24.png)
+
+* 앱 구성도
+![image](https://user-images.githubusercontent.com/33618171/86105560-7245f880-bafa-11ea-936f-6703cbcdb215.png)
+
 * 프로젝트 UI
 <img width="423" alt="1" src="https://user-images.githubusercontent.com/33618171/86098771-8afde080-baf1-11ea-980c-396d05571c5c.png">
 <img width="711" alt="스크린샷 2020-06-29 오후 7 13 51" src="https://user-images.githubusercontent.com/33618171/86098824-9e10b080-baf1-11ea-880d-2f24ed75a216.png">
